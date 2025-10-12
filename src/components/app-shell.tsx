@@ -1,8 +1,9 @@
+
 "use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Search, User, icons } from "lucide-react";
+import { Menu, Search, User, Home, Calendar, Bell, DollarSign } from "lucide-react";
 import type { NavItem } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,14 @@ interface AppShellProps {
   children: React.ReactNode;
   userType: "customer" | "partner";
 }
+
+const iconComponents: { [key: string]: React.ElementType } = {
+  Home,
+  Calendar,
+  Bell,
+  User,
+  DollarSign,
+};
 
 export function AppShell({ navItems, children, userType }: AppShellProps) {
   const pathname = usePathname();
@@ -63,7 +72,8 @@ export function AppShell({ navItems, children, userType }: AppShellProps) {
               <span className="">WilayatHub</span>
             </Link>
             {navItems.map((item) => {
-              const Icon = icons[item.iconName];
+              const Icon = iconComponents[item.iconName];
+              if (!Icon) return null;
               return (
               <Link
                 key={item.label}
@@ -107,7 +117,8 @@ export function AppShell({ navItems, children, userType }: AppShellProps) {
     <div className="fixed bottom-0 left-0 z-50 w-full h-16 border-t bg-background md:hidden">
         <div className="grid h-full max-w-lg grid-cols-4 mx-auto font-medium">
             {navItems.map((item) => {
-                const Icon = icons[item.iconName];
+                const Icon = iconComponents[item.iconName];
+                if (!Icon) return null;
                 return (
                 <Link
                     key={item.label}
