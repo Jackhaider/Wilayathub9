@@ -93,7 +93,7 @@ export function AppShell({ navItems, children, userType }: AppShellProps) {
             />
           </div>
         </form>
-        <Button variant="secondary" size="icon" className="rounded-full">
+        <Button asChild variant="secondary" size="icon" className="rounded-full">
           <Link href={userType === 'customer' ? "/profile" : "/partner/profile"}>
             <User className="h-5 w-5" />
             <span className="sr-only">Toggle user menu</span>
@@ -114,7 +114,7 @@ export function AppShell({ navItems, children, userType }: AppShellProps) {
                     href={item.href}
                     className={cn(
                         "inline-flex flex-col items-center justify-center px-5 hover:bg-muted",
-                        pathname === item.href ? "text-accent-foreground" : "text-muted-foreground"
+                        pathname === item.href ? "text-primary" : "text-muted-foreground"
                     )}
                 >
                     <Icon className="w-5 h-5 mb-1" />

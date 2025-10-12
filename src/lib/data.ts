@@ -15,6 +15,7 @@ import {
   Palette,
   ChefHat,
   HeartPulse,
+  type Icon as LucideIconType,
 } from "lucide-react";
 import { getPlaceholderImage } from "./placeholder-images";
 
@@ -77,7 +78,7 @@ export const bookings: Booking[] = [
 export interface NavItem {
     href: string;
     label: string;
-    iconName: keyof typeof import("lucide-react");
+    iconName: keyof typeof import("lucide-react")["icons"];
 }
   
 export const customerNavItems: NavItem[] = [
