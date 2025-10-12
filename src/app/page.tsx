@@ -16,10 +16,10 @@ export default function SplashPage() {
 
           <div className="mt-12 w-full space-y-4">
             <Button asChild size="lg" className="w-full">
-              <Link href="/dashboard">Continue as Customer</Link>
+              <Link href="/login">Continue as Customer</Link>
             </Button>
             <Button asChild variant="secondary" size="lg" className="w-full">
-              <Link href="/partner/dashboard">Continue as Partner</Link>
+              <Link href="/login">Continue as Partner</Link>
             </Button>
           </div>
 
