@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Search } from "lucide-react";
+import { Menu, Search, User } from "lucide-react";
 import type { NavItem } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -92,7 +92,7 @@ export function AppShell({ navItems, children, userType }: AppShellProps) {
           </div>
         </form>
         <Button variant="secondary" size="icon" className="rounded-full">
-          <Link href="/profile">
+          <Link href={userType === 'customer' ? "/profile" : "/partner/profile"}>
             <User className="h-5 w-5" />
             <span className="sr-only">Toggle user menu</span>
           </Link>
