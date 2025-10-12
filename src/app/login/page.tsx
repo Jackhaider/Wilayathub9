@@ -18,11 +18,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GoogleIcon, WilayatHubLogo } from "@/components/icons";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/firebase";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 
 export default function AuthenticationPage() {
   const bgImage = getPlaceholderImage("auth-background");
   const router = useRouter();
   const { toast } = useToast();
+  const auth = useAuth();
 
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -31,17 +40,24 @@ export default function AuthenticationPage() {
   const [signupPassword, setSignupPassword] = useState("");
   const [signupConfirmPassword, setSignupConfirmPassword] = useState("");
 
-  const handleLogin = () => {
-    // TODO: Implement actual login logic with Firebase
-    console.log("Logging in with:", { loginEmail, loginPassword });
-    toast({
-      title: "Login Successful",
-      description: "Redirecting to your dashboard...",
-    });
-    router.push("/dashboard");
+  const handleLogin = async () => {
+    try {
+      await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
+      toast({
+        title: "Login Successful",
+        description: "Redirecting to your dashboard...",
+      });
+      router.push("/dashboard");
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: error.message,
+      });
+    }
   };
 
-  const handleCreateAccount = () => {
+  const handleCreateAccount = async () => {
     if (signupPassword !== signupConfirmPassword) {
       toast({
         variant: "destructive",
@@ -50,21 +66,40 @@ export default function AuthenticationPage() {
       });
       return;
     }
-    // TODO: Implement actual signup logic with Firebase
-    console.log("Creating account with:", { signupName, signupEmail, signupPassword });
-    toast({
-      title: "Account Created!",
-      description: "Redirecting to your dashboard...",
-    });
-    router.push("/dashboard");
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, signupEmail, signupPassword);
+      await sendEmailVerification(userCredential.user);
+      toast({
+        title: "Account Created!",
+        description: "A verification email has been sent. Please check your inbox.",
+      });
+      // Optionally, you can redirect the user to a page that tells them to verify their email.
+      // For now, we'll redirect to the login page.
+      // router.push("/verify-email");
+    } catch (error: any) {
+       toast({
+        variant: "destructive",
+        title: "Account Creation Failed",
+        description: error.message,
+      });
+    }
   };
 
-  const handleGoogleLogin = () => {
-    // TODO: Implement Google login logic
-    toast({
-      title: "Signing in with Google...",
-    });
-    router.push("/dashboard");
+  const handleGoogleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+      toast({
+        title: "Signing in with Google...",
+      });
+      router.push("/dashboard");
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Google Sign-In Failed",
+        description: error.message,
+      });
+    }
   }
 
   return (
