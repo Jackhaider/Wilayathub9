@@ -93,6 +93,10 @@ export default function AuthenticationPage() {
                   <Label htmlFor="password-signup">Password</Label>
                   <Input id="password-signup" type="password" required />
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="confirm-password-signup">Confirm Password</Label>
+                  <Input id="confirm-password-signup" type="password" required />
+                </div>
                 <Button type="submit" className="w-full">
                   Create Account
                 </Button>
