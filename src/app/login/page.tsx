@@ -17,19 +17,11 @@ import { getPlaceholderImage } from "@/lib/placeholder-images";
 export default function AuthenticationPage() {
   const bgImage = getPlaceholderImage("auth-background");
   return (
-    <div className="relative min-h-screen w-full">
-      {bgImage && (
-        <Image
-          src={bgImage.imageUrl}
-          alt={bgImage.description}
-          fill
-          className="object-cover opacity-20"
-          data-ai-hint={bgImage.imageHint}
-        />
-      )}
+    <div className="relative min-h-screen w-full bg-background">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent"></div>
       <div className="relative flex min-h-screen items-center justify-center p-4">
         <Tabs defaultValue="login" className="w-full max-w-md">
-          <Card className="shadow-2xl">
+          <Card className="shadow-2xl bg-card/80 backdrop-blur-lg border-primary/20">
             <div className="flex justify-center pt-6">
               <TabsList className="grid w-full max-w-xs grid-cols-2">
                 <TabsTrigger value="login">Login</TabsTrigger>
