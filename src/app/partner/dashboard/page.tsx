@@ -16,6 +16,8 @@ import { bookings, partnerNavItems } from "@/lib/data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MapPin } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { getPlaceholderImage } from "@/lib/placeholder-images";
+
 
 export default function PartnerDashboard() {
   const incomingRequests = bookings.filter((b) => b.status === "Requested");

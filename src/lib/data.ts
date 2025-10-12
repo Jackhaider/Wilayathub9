@@ -77,21 +77,21 @@ export const bookings: Booking[] = [
 export interface NavItem {
     href: string;
     label: string;
-    icon: LucideIcon;
+    iconName: keyof typeof import("lucide-react");
 }
   
 export const customerNavItems: NavItem[] = [
-    { href: '/dashboard', label: 'Home', icon: Home },
-    { href: '/bookings', label: 'My Bookings', icon: Calendar },
-    { href: '/notifications', label: 'Notifications', icon: Bell },
-    { href: '/profile', label: 'Profile', icon: User },
+    { href: '/dashboard', label: 'Home', iconName: 'Home' },
+    { href: '/bookings', label: 'My Bookings', iconName: 'Calendar' },
+    { href: '/notifications', label: 'Notifications', iconName: 'Bell' },
+    { href: '/profile', label: 'Profile', iconName: 'User' },
 ];
 
 export const partnerNavItems: NavItem[] = [
-    { href: '/partner/dashboard', label: 'Dashboard', icon: Home },
-    { href: '/partner/earnings', label: 'Earnings', icon: Calendar },
-    { href: '/notifications', label: 'Notifications', icon: Bell },
-    { href: '/partner/profile', label: 'Profile', icon: User },
+    { href: '/partner/dashboard', label: 'Dashboard', iconName: 'Home' },
+    { href: '/partner/earnings', label: 'Earnings', iconName: 'DollarSign' },
+    { href: '/notifications', label: 'Notifications', iconName: 'Bell' },
+    { href: '/partner/profile', label: 'Profile', iconName: 'User' },
 ];
 
 export interface ChatMessage {

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Search, User } from "lucide-react";
+import { Menu, Search, User, icons } from "lucide-react";
 import type { NavItem } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -62,7 +62,9 @@ export function AppShell({ navItems, children, userType }: AppShellProps) {
               <WilayatHubLogo className="h-8 w-8" />
               <span className="">WilayatHub</span>
             </Link>
-            {navItems.map((item) => (
+            {navItems.map((item) => {
+              const Icon = icons[item.iconName];
+              return (
               <Link
                 key={item.label}
                 href={item.href}
@@ -73,10 +75,10 @@ export function AppShell({ navItems, children, userType }: AppShellProps) {
                     : "text-muted-foreground"
                 )}
               >
-                <item.icon className="h-5 w-5" />
+                <Icon className="h-5 w-5" />
                 {item.label}
               </Link>
-            ))}
+            )})}
           </nav>
         </SheetContent>
       </Sheet>
@@ -104,7 +106,9 @@ export function AppShell({ navItems, children, userType }: AppShellProps) {
   const bottomNav = (
     <div className="fixed bottom-0 left-0 z-50 w-full h-16 border-t bg-background md:hidden">
         <div className="grid h-full max-w-lg grid-cols-4 mx-auto font-medium">
-            {navItems.map((item) => (
+            {navItems.map((item) => {
+                const Icon = icons[item.iconName];
+                return (
                 <Link
                     key={item.label}
                     href={item.href}
@@ -113,10 +117,10 @@ export function AppShell({ navItems, children, userType }: AppShellProps) {
                         pathname === item.href ? "text-accent-foreground" : "text-muted-foreground"
                     )}
                 >
-                    <item.icon className="w-5 h-5 mb-1" />
+                    <Icon className="w-5 h-5 mb-1" />
                     <span className="text-xs">{item.label}</span>
                 </Link>
-            ))}
+            )})}
         </div>
     </div>
   );
