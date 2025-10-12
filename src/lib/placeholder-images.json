@@ -1,3 +1,58 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "avatar-1",
+      "description": "Male avatar with glasses",
+      "imageUrl": "https://picsum.photos/seed/avatar1/200/200",
+      "imageHint": "man portrait"
+    },
+    {
+      "id": "avatar-2",
+      "description": "Female avatar with short hair",
+      "imageUrl": "https://picsum.photos/seed/avatar2/200/200",
+      "imageHint": "woman portrait"
+    },
+    {
+      "id": "avatar-3",
+      "description": "Male avatar with a beard",
+      "imageUrl": "https://picsum.photos/seed/avatar3/200/200",
+      "imageHint": "man beard"
+    },
+    {
+      "id": "avatar-4",
+      "description": "Female avatar smiling",
+      "imageUrl": "https://picsum.photos/seed/avatar4/200/200",
+      "imageHint": "woman smiling"
+    },
+    {
+      "id": "promo-banner-1",
+      "description": "Promotional banner for cleaning services",
+      "imageUrl": "https://picsum.photos/seed/promo1/1200/600",
+      "imageHint": "cleaning supplies"
+    },
+    {
+      "id": "promo-banner-2",
+      "description": "Promotional banner for plumbing services",
+      "imageUrl": "https://picsum.photos/seed/promo2/1200/600",
+      "imageHint": "plumbing pipes"
+    },
+    {
+      "id": "promo-banner-3",
+      "description": "Promotional banner for beauty services",
+      "imageUrl": "https://picsum.photos/seed/promo3/1200/600",
+      "imageHint": "makeup brushes"
+    },
+    {
+      "id": "map-placeholder",
+      "description": "Placeholder image of a city map",
+      "imageUrl": "https://picsum.photos/seed/map/1200/800",
+      "imageHint": "city map"
+    },
+    {
+      "id": "auth-background",
+      "description": "Abstract light gray background image",
+      "imageUrl": "https://picsum.photos/seed/authbg/1920/1080",
+      "imageHint": "abstract gray"
+    }
+  ]
 }
