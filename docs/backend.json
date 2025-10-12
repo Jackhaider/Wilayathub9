@@ -1,0 +1,304 @@
+{
+  "entities": {
+    "Customer": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Customer",
+      "type": "object",
+      "description": "Represents a customer using the WilayatHub app.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the customer entity."
+        },
+        "firstName": {
+          "type": "string",
+          "description": "First name of the customer."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Last name of the customer."
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address of the customer.",
+          "format": "email"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "Phone number of the customer."
+        },
+        "address": {
+          "type": "string",
+          "description": "Address of the customer."
+        }
+      },
+      "required": [
+        "id",
+        "firstName",
+        "lastName",
+        "email",
+        "phoneNumber",
+        "address"
+      ]
+    },
+    "Partner": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Partner",
+      "type": "object",
+      "description": "Represents a service provider (partner) on the WilayatHub app.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the partner entity."
+        },
+        "firstName": {
+          "type": "string",
+          "description": "First name of the partner."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Last name of the partner."
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address of the partner.",
+          "format": "email"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "Phone number of the partner."
+        },
+        "serviceCategory": {
+          "type": "string",
+          "description": "The category of service the partner provides (e.g., Electrician, Plumber)."
+        },
+        "pricePerJob": {
+          "type": "number",
+          "description": "The price charged per job by the partner."
+        }
+      },
+      "required": [
+        "id",
+        "firstName",
+        "lastName",
+        "email",
+        "phoneNumber",
+        "serviceCategory",
+        "pricePerJob"
+      ]
+    },
+    "Booking": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Booking",
+      "type": "object",
+      "description": "Represents a booking made by a customer for a partner's service.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the booking entity."
+        },
+        "customerId": {
+          "type": "string",
+          "description": "Reference to Customer. (Relationship: Customer 1:N Booking)"
+        },
+        "partnerId": {
+          "type": "string",
+          "description": "Reference to Partner. (Relationship: Partner 1:N Booking)"
+        },
+        "dateTime": {
+          "type": "string",
+          "description": "Date and time of the booking.",
+          "format": "date-time"
+        },
+        "address": {
+          "type": "string",
+          "description": "Address where the service is to be provided."
+        },
+        "status": {
+          "type": "string",
+          "description": "Status of the booking (e.g., Requested, Accepted, On the way, Completed)."
+        }
+      },
+      "required": [
+        "id",
+        "customerId",
+        "partnerId",
+        "dateTime",
+        "address",
+        "status"
+      ]
+    },
+    "ChatMessage": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ChatMessage",
+      "type": "object",
+      "description": "Represents a chat message between a customer and a partner.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the chat message."
+        },
+        "bookingId": {
+          "type": "string",
+          "description": "Reference to Booking. (Relationship: Booking 1:N ChatMessage)"
+        },
+        "senderId": {
+          "type": "string",
+          "description": "ID of the user who sent the message (either Customer or Partner)."
+        },
+        "recipientId": {
+          "type": "string",
+          "description": "ID of the user who is receiving the message (either Customer or Partner)."
+        },
+        "message": {
+          "type": "string",
+          "description": "The content of the chat message."
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp of when the message was sent.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "bookingId",
+        "senderId",
+        "recipientId",
+        "message",
+        "timestamp"
+      ]
+    },
+    "Notification": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Notification",
+      "type": "object",
+      "description": "Represents a push notification sent to a user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the notification."
+        },
+        "userId": {
+          "type": "string",
+          "description": "ID of the user who receives the notification (either Customer or Partner)."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the notification."
+        },
+        "message": {
+          "type": "string",
+          "description": "The content of the notification."
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp of when the notification was sent.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "title",
+        "message",
+        "timestamp"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/customers/{customerId}",
+        "definition": {
+          "entityName": "Customer",
+          "schema": {
+            "$ref": "#/backend/entities/Customer"
+          },
+          "description": "Stores customer profiles. Uses path-based ownership: only the user with the matching {customerId} (request.auth.uid) can read/write their own profile data.",
+          "params": [
+            {
+              "name": "customerId",
+              "description": "The unique identifier for the customer, matching the Firebase Auth UID."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/partners/{partnerId}",
+        "definition": {
+          "entityName": "Partner",
+          "schema": {
+            "$ref": "#/backend/entities/Partner"
+          },
+          "description": "Stores partner profiles. Uses path-based ownership: only the user with the matching {partnerId} (request.auth.uid) can read/write their own profile data.",
+          "params": [
+            {
+              "name": "partnerId",
+              "description": "The unique identifier for the partner, matching the Firebase Auth UID."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/bookings/{bookingId}",
+        "definition": {
+          "entityName": "Booking",
+          "schema": {
+            "$ref": "#/backend/entities/Booking"
+          },
+          "description": "Stores booking information. Includes denormalized 'customerId' and 'partnerId' fields to enable authorization independence. Allows security rules to validate access based on these IDs without requiring 'get()' calls.",
+          "params": [
+            {
+              "name": "bookingId",
+              "description": "The unique identifier for the booking."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/bookings/{bookingId}/chat_messages/{messageId}",
+        "definition": {
+          "entityName": "ChatMessage",
+          "schema": {
+            "$ref": "#/backend/entities/ChatMessage"
+          },
+          "description": "Stores chat messages associated with a specific booking. Access is restricted to the customer and partner involved in the booking, checked via the booking's denormalized customerId and partnerId.",
+          "params": [
+            {
+              "name": "bookingId",
+              "description": "The unique identifier for the booking associated with the messages."
+            },
+            {
+              "name": "messageId",
+              "description": "The unique identifier for the chat message."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/notifications/{notificationId}",
+        "definition": {
+          "entityName": "Notification",
+          "schema": {
+            "$ref": "#/backend/entities/Notification"
+          },
+          "description": "Stores notifications for users.  Path-based ownership ensures only the intended user can access their notifications.",
+          "params": [
+            {
+              "name": "notificationId",
+              "description": "The unique identifier for the notification."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to support a service marketplace application (WilayatHub) connecting customers and service providers. It prioritizes authorization independence through denormalization and structural segregation for clarity and security. User roles (Customer/Partner) are implicitly determined by their location within the database (separate collections). This eliminates the need for custom claims and simplifies security rules.\n\nAuthorization Independence is achieved by storing Customer and Partner data separately under `/customers/{customerId}` and `/partners/{partnerId}`, respectively. Bookings are stored under a top-level `/bookings/{bookingId}` collection, but importantly, each booking document denormalizes the `customerId` and `partnerId`. This allows security rules on the `bookings` collection to validate access based on the requesting user's UID without needing to perform expensive and brittle `get()` operations on parent documents.\n\nThe data structure supports QAPs (Queries are not filters) by ensuring that each collection has a homogeneous security posture. For example, all documents in `/bookings` have the same field structure and are subject to the same read/write access rules, based on the denormalized `customerId` and `partnerId` fields. Segregation of Customer and Partner data ensures that listing operations for either role remain secure. Furthermore, storing chat messages within a subcollection `/bookings/{bookingId}/chat_messages/{messageId}` ensures secure listing of messages only for the involved Customer and Partner."
+  }
+}

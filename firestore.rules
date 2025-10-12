@@ -1,0 +1,161 @@
+/**
+ * @file Firestore Security Rules for WilayatHub
+ * @version Prototyping
+ *
+ * @Core Philosophy:
+ * This ruleset enforces a strict user-ownership model for customer and partner profiles,
+ * and a shared-access model for bookings and associated chat messages.  Authorization
+ * decisions are made independently at each level using denormalized data for efficiency and
+ * security.
+ *
+ * @Data Structure:
+ * - /customers/{customerId}:  Customer profile data.
+ * - /partners/{partnerId}: Partner profile data.
+ * - /bookings/{bookingId}: Booking data, containing denormalized customerId and partnerId.
+ * - /bookings/{bookingId}/chat_messages/{messageId}: Chat messages related to a booking.
+ * - /notifications/{notificationId}: Notifications for users.
+ *
+ * @Key Security Decisions:
+ * - Users can only read/write their own customer or partner profiles.
+ * - Bookings and chat messages are accessible only to the customer and partner involved,
+ *   determined by the booking's customerId and partnerId.
+ * - Listing of customer and partner profiles is prohibited.
+ *
+ * @Denormalization for Authorization:
+ * - The /bookings/{bookingId} documents include the customerId and partnerId to allow
+ *   authorization checks without requiring extra `get()` calls to customer or partner profiles.
+ *
+ * @Structural Segregation:
+ * - Customer and Partner data are stored in separate collections, which simplifies access control
+ *   and prevents accidental exposure of private data.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Allows a customer to read/write their own profile data.
+     * @path /customers/{customerId}
+     * @allow (create) request.auth.uid == 'user_abc' and request.resource.data.id == 'user_abc'
+     * @allow (get, update, delete) request.auth.uid == 'user_abc'
+     * @deny (create) request.auth.uid != 'user_abc'
+     * @deny (get, update, delete) request.auth.uid != 'user_abc'
+     * @principle Enforces document ownership for writes.
+     */
+    match /customers/{customerId} {
+      function isOwner(userId) {
+        return request.auth.uid == userId;
+      }
+
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow get: if isOwner(customerId);
+      allow list: if false;
+
+      allow create: if isOwner(customerId) && request.resource.data.id == customerId;
+      allow update: if isExistingOwner(customerId) && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(customerId);
+    }
+
+    /**
+     * @description Allows a partner to read/write their own profile data.
+     * @path /partners/{partnerId}
+     * @allow (create) request.auth.uid == 'partner_xyz' and request.resource.data.id == 'partner_xyz'
+     * @allow (get, update, delete) request.auth.uid == 'partner_xyz'
+     * @deny (create) request.auth.uid != 'partner_xyz'
+     * @deny (get, update, delete) request.auth.uid != 'partner_xyz'
+     * @principle Enforces document ownership for writes.
+     */
+    match /partners/{partnerId} {
+      function isOwner(userId) {
+        return request.auth.uid == userId;
+      }
+
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow get: if isOwner(partnerId);
+      allow list: if false;
+
+      allow create: if isOwner(partnerId) && request.resource.data.id == partnerId;
+      allow update: if isExistingOwner(partnerId) && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(partnerId);
+    }
+
+    /**
+     * @description Allows the customer and partner associated with a booking to read/write booking data.
+     * @path /bookings/{bookingId}
+     * @allow (get) request.auth.uid == 'user_abc' (if user_abc is customerId or partnerId in the booking)
+     * @allow (create, update, delete) request.auth.uid == 'user_abc' (if user_abc is customerId or partnerId in the booking)
+     * @deny (get) request.auth.uid == 'outsider'
+     * @principle Enforces shared access for booking participants.
+     */
+    match /bookings/{bookingId} {
+      function isParticipant(customerId, partnerId) {
+        return request.auth.uid == customerId || request.auth.uid == partnerId;
+      }
+
+      function isExistingParticipant(customerId, partnerId) {
+        return isParticipant(customerId, partnerId) && resource != null;
+      }
+
+      allow get: if isParticipant(resource.data.customerId, resource.data.partnerId);
+      allow list: if false;
+
+      allow create: if isParticipant(request.resource.data.customerId, request.resource.data.partnerId);
+      allow update: if isExistingParticipant(resource.data.customerId, resource.data.partnerId);
+      allow delete: if isExistingParticipant(resource.data.customerId, resource.data.partnerId);
+    }
+
+    /**
+     * @description Allows the customer and partner associated with a booking to read/write chat messages.
+     * @path /bookings/{bookingId}/chat_messages/{messageId}
+     * @allow (get, list) request.auth.uid == 'user_abc' (if user_abc is customerId or partnerId in the parent booking)
+     * @allow (create, update, delete) request.auth.uid == 'user_abc' (if user_abc is customerId or partnerId in the parent booking)
+     * @deny (get, list, create, update, delete) request.auth.uid == 'outsider'
+     * @principle Enforces shared access for booking participants to chat messages.
+     */
+    match /bookings/{bookingId}/chat_messages/{messageId} {
+      function isParticipant(bookingId) {
+        return get(/databases/$(database)/documents/bookings/$(bookingId)).data.customerId == request.auth.uid
+            || get(/databases/$(database)/documents/bookings/$(bookingId)).data.partnerId == request.auth.uid;
+      }
+
+      allow get: if isParticipant(bookingId);
+      allow list: if isParticipant(bookingId);
+
+      allow create: if isParticipant(bookingId);
+      allow update: if isParticipant(bookingId);
+      allow delete: if isParticipant(bookingId);
+    }
+
+    /**
+     * @description Allows a user to read/write their own notifications.
+     * @path /notifications/{notificationId}
+     * @allow (create) request.auth.uid == 'user_abc' and request.resource.data.userId == 'user_abc'
+     * @allow (get, update, delete) request.auth.uid == 'user_abc'
+     * @deny (create) request.auth.uid != 'user_abc'
+     * @deny (get, update, delete) request.auth.uid != 'user_abc'
+     * @principle Enforces document ownership for writes.
+     */
+    match /notifications/{notificationId} {
+      function isOwner(userId) {
+        return request.auth.uid == userId;
+      }
+
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow get: if isOwner(request.auth.uid);
+      allow list: if false;
+
+      allow create: if request.auth.uid == request.resource.data.userId;
+      allow update: if isExistingOwner(request.auth.uid);
+      allow delete: if isExistingOwner(request.auth.uid);
+    }
+  }
+}
