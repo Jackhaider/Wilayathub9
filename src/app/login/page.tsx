@@ -1,5 +1,9 @@
+'use client';
+
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,9 +17,56 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GoogleIcon, WilayatHubLogo } from "@/components/icons";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
+import { useToast } from "@/hooks/use-toast";
 
 export default function AuthenticationPage() {
   const bgImage = getPlaceholderImage("auth-background");
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [signupName, setSignupName] = useState("");
+  const [signupEmail, setSignupEmail] = useState("");
+  const [signupPassword, setSignupPassword] = useState("");
+  const [signupConfirmPassword, setSignupConfirmPassword] = useState("");
+
+  const handleLogin = () => {
+    // TODO: Implement actual login logic with Firebase
+    console.log("Logging in with:", { loginEmail, loginPassword });
+    toast({
+      title: "Login Successful",
+      description: "Redirecting to your dashboard...",
+    });
+    router.push("/dashboard");
+  };
+
+  const handleCreateAccount = () => {
+    if (signupPassword !== signupConfirmPassword) {
+      toast({
+        variant: "destructive",
+        title: "Passwords do not match",
+        description: "Please check your password and try again.",
+      });
+      return;
+    }
+    // TODO: Implement actual signup logic with Firebase
+    console.log("Creating account with:", { signupName, signupEmail, signupPassword });
+    toast({
+      title: "Account Created!",
+      description: "Redirecting to your dashboard...",
+    });
+    router.push("/dashboard");
+  };
+
+  const handleGoogleLogin = () => {
+    // TODO: Implement Google login logic
+    toast({
+      title: "Signing in with Google...",
+    });
+    router.push("/dashboard");
+  }
+
   return (
     <div className="relative min-h-screen w-full bg-background">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent"></div>
@@ -44,6 +95,8 @@ export default function AuthenticationPage() {
                     type="email"
                     placeholder="m@example.com"
                     required
+                    value={loginEmail}
+                    onChange={(e) => setLoginEmail(e.target.value)}
                   />
                 </div>
                 <div className="space-y-2">
@@ -56,12 +109,18 @@ export default function AuthenticationPage() {
                       Forgot your password?
                     </Link>
                   </div>
-                  <Input id="password-login" type="password" required />
+                  <Input 
+                    id="password-login" 
+                    type="password" 
+                    required 
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                  />
                 </div>
-                <Button type="submit" className="w-full">
-                  Login with OTP
+                <Button onClick={handleLogin} className="w-full">
+                  Login
                 </Button>
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full" onClick={handleGoogleLogin}>
                   <GoogleIcon className="mr-2 h-4 w-4" />
                   Login with Google
                 </Button>
@@ -78,7 +137,13 @@ export default function AuthenticationPage() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="name-signup">Name</Label>
-                  <Input id="name-signup" placeholder="Max Robinson" required />
+                  <Input 
+                    id="name-signup" 
+                    placeholder="Max Robinson" 
+                    required 
+                    value={signupName}
+                    onChange={(e) => setSignupName(e.target.value)}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email-signup">Email or Phone</Label>
@@ -87,20 +152,34 @@ export default function AuthenticationPage() {
                     type="email"
                     placeholder="m@example.com"
                     required
+                    value={signupEmail}
+                    onChange={(e) => setSignupEmail(e.target.value)}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password-signup">Password</Label>
-                  <Input id="password-signup" type="password" required />
+                  <Input 
+                    id="password-signup" 
+                    type="password" 
+                    required
+                    value={signupPassword}
+                    onChange={(e) => setSignupPassword(e.target.value)}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="confirm-password-signup">Confirm Password</Label>
-                  <Input id="confirm-password-signup" type="password" required />
+                  <Input 
+                    id="confirm-password-signup" 
+                    type="password" 
+                    required 
+                    value={signupConfirmPassword}
+                    onChange={(e) => setSignupConfirmPassword(e.target.value)}
+                  />
                 </div>
-                <Button type="submit" className="w-full">
+                <Button onClick={handleCreateAccount} className="w-full">
                   Create Account
                 </Button>
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full" onClick={handleGoogleLogin}>
                   <GoogleIcon className="mr-2 h-4 w-4" />
                   Sign up with Google
                 </Button>
