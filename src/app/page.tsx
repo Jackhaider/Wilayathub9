@@ -1,41 +1,51 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { WilayatHubLogo } from "@/components/icons";
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { MapPin } from 'lucide-react';
+import { useLocation } from '@/context/location-context';
 
 export default function SplashPage() {
+  const router = useRouter();
+  const { setLocation, error } = useLocation();
+  const [status, setStatus] = useState('Fetching your location...');
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          // For now, we'll just use a mock address.
+          // A real app would use a reverse geocoding service here.
+          const mockAddress = '123 Main St, Anytown, USA';
+          setLocation({ latitude, longitude, address: mockAddress });
+          setStatus('Location found!');
+          router.push('/login');
+        },
+        (err) => {
+          console.error(err);
+          setStatus('Could not fetch location.');
+          // Redirect even if location is denied
+          router.push('/login');
+        },
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+      );
+    } else {
+      setStatus('Geolocation is not supported by this browser.');
+      router.push('/login');
+    }
+  }, [router, setLocation]);
+
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md border-0 bg-transparent shadow-none sm:border sm:shadow-lg">
-        <CardContent className="flex flex-col items-center justify-center p-6 sm:p-12">
-          <WilayatHubLogo className="mb-4 h-16 w-16 text-primary" />
-          <h1 className="text-4xl font-bold tracking-tighter text-primary">
-            WilayatHub
-          </h1>
-          <p className="mt-2 text-muted-foreground">All Services. One Hub.</p>
-
-          <div className="mt-12 w-full space-y-4">
-            <Button asChild size="lg" className="w-full">
-              <Link href="/login">Continue as Customer</Link>
-            </Button>
-            <Button asChild variant="secondary" size="lg" className="w-full">
-              <Link href="/login">Continue as Partner</Link>
-            </Button>
-          </div>
-
-          <p className="mt-8 text-center text-xs text-muted-foreground">
-            By continuing, you agree to our{" "}
-            <Link href="#" className="underline hover:text-primary">
-              Terms of Service
-            </Link>{" "}
-            and{" "}
-            <Link href="#" className="underline hover:text-primary">
-              Privacy Policy
-            </Link>
-            .
-          </p>
-        </CardContent>
-      </Card>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4 text-center">
+      <div className="relative mb-4 flex h-24 w-24 items-center justify-center">
+        <div className="absolute h-full w-full animate-ping rounded-full bg-primary/50"></div>
+        <div className="relative rounded-full bg-primary p-4 text-primary-foreground">
+          <MapPin className="h-8 w-8" />
+        </div>
+      </div>
+      <p className="text-lg font-medium text-foreground">{status}</p>
+      {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
     </div>
   );
 }

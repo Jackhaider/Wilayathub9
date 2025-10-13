@@ -1,3 +1,5 @@
+'use client';
+
 import Link from "next/link";
 import Image from "next/image";
 import { AppShell } from "@/components/app-shell";
@@ -12,9 +14,11 @@ import {
 } from "@/components/ui/carousel";
 import { serviceCategories, customerNavItems } from "@/lib/data";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, MapPin } from "lucide-react";
+import { useLocation } from "@/context/location-context";
 
 export default function CustomerDashboard() {
+  const { location } = useLocation();
   const promoImages = [
     getPlaceholderImage("promo-banner-1"),
     getPlaceholderImage("promo-banner-2"),
@@ -24,6 +28,11 @@ export default function CustomerDashboard() {
   return (
     <AppShell navItems={customerNavItems} userType="customer">
       <div className="grid gap-8">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted p-2 rounded-md">
+            <MapPin className="h-4 w-4 text-primary" />
+            <span className="truncate">{location ? location.address : 'Loading location...'}</span>
+        </div>
+
         <Carousel className="w-full" opts={{ loop: true }}>
           <CarouselContent>
             {promoImages.map((img, index) =>

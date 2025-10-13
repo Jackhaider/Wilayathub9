@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { FirebaseClientProvider } from '@/firebase';
+import { LocationProvider } from '@/context/location-context';
 
 export const metadata: Metadata = {
   title: 'WilayatHub',
@@ -23,9 +24,11 @@ export default function RootLayout({
         <meta name="theme-color" content="#1A1A1A" />
       </head>
       <body className="font-body antialiased">
-        <FirebaseClientProvider>
-          {children}
-        </FirebaseClientProvider>
+        <LocationProvider>
+          <FirebaseClientProvider>
+            {children}
+          </FirebaseClientProvider>
+        </LocationProvider>
         <Toaster />
       </body>
     </html>
