@@ -4,37 +4,62 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { MapPin } from 'lucide-react';
 import { useLocation } from '@/context/location-context';
+import { useUser } from '@/firebase';
 
 export default function SplashPage() {
   const router = useRouter();
   const { setLocation, error } = useLocation();
+  const { user, isUserLoading } = useUser();
   const [status, setStatus] = useState('Fetching your location...');
+  const [locationFetched, setLocationFetched] = useState(false);
 
   useEffect(() => {
+    // This function handles the redirection logic.
+    const redirectUser = () => {
+      // It should only run if location has been fetched and auth state is known.
+      if (!locationFetched || isUserLoading) {
+        return;
+      }
+
+      if (user) {
+        // If user is logged in, redirect to the dashboard.
+        router.push('/dashboard');
+      } else {
+        // If no user, redirect to login.
+        router.push('/login');
+      }
+    };
+
+    // Get the user's location.
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          // For now, we'll just use a mock address.
-          // A real app would use a reverse geocoding service here.
+          // In a real app, use a reverse geocoding service.
           const mockAddress = '123 Main St, Anytown, USA';
           setLocation({ latitude, longitude, address: mockAddress });
           setStatus('Location found!');
-          router.push('/login');
+          setLocationFetched(true);
         },
         (err) => {
           console.error(err);
-          setStatus('Could not fetch location.');
-          // Redirect even if location is denied
-          router.push('/login');
+          setStatus('Could not fetch location. Using default.');
+          // Even if location fails, we set a default and proceed.
+          setLocation({ latitude: 0, longitude: 0, address: 'Location not found' });
+          setLocationFetched(true);
         },
         { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
       );
     } else {
-      setStatus('Geolocation is not supported by this browser.');
-      router.push('/login');
+      setStatus('Geolocation is not supported. Using default.');
+      setLocation({ latitude: 0, longitude: 0, address: 'Location not supported' });
+      setLocationFetched(true);
     }
-  }, [router, setLocation]);
+
+    // Attempt to redirect whenever location status or user loading status changes.
+    redirectUser();
+
+  }, [router, setLocation, locationFetched, isUserLoading, user]);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4 text-center">
