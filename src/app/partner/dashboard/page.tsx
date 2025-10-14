@@ -1,13 +1,13 @@
 
+'use client';
+
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -18,10 +18,69 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MapPin } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
+import { useUser, useFirestore } from "@/firebase";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { doc, getDoc } from "firebase/firestore";
+import { Skeleton } from "@/components/ui/skeleton";
 
 
 export default function PartnerDashboard() {
+  const { user, isUserLoading } = useUser();
+  const firestore = useFirestore();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (isUserLoading) return;
+
+    if (!user) {
+      router.push('/login?as=partner');
+      return;
+    }
+
+    const checkStatus = async () => {
+      const partnerDocRef = doc(firestore, "partners", user.uid);
+      const partnerDoc = await getDoc(partnerDocRef);
+      if (partnerDoc.exists() && partnerDoc.data().status === 'approved') {
+        setIsLoading(false);
+      } else {
+        router.push('/partner/verification');
+      }
+    };
+    checkStatus();
+  }, [user, isUserLoading, firestore, router]);
+
+
   const incomingRequests = bookings.filter((b) => b.status === "Requested");
+
+  if (isLoading) {
+    return (
+      <AppShell navItems={partnerNavItems} userType="partner">
+         <div className="grid gap-6">
+            <div className="flex items-center justify-between">
+                <Skeleton className="h-9 w-40" />
+                <div className="flex items-center space-x-2">
+                    <Skeleton className="h-6 w-11 rounded-full" />
+                    <Skeleton className="h-6 w-16" />
+                </div>
+            </div>
+             <Card>
+                <CardHeader>
+                    <Skeleton className="h-7 w-64" />
+                    <Skeleton className="h-4 w-80" />
+                </CardHeader>
+                <CardContent>
+                     <div className="text-center py-12 text-muted-foreground">
+                        <p>Loading requests...</p>
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+      </AppShell>
+    )
+  }
+
 
   return (
     <AppShell navItems={partnerNavItems} userType="partner">

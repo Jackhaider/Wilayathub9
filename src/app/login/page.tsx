@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from "next/link";
@@ -19,7 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GoogleIcon, WilayatHubLogo } from "@/components/icons";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/firebase";
+import { useAuth, useFirestore } from "@/firebase";
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
@@ -27,6 +26,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 export default function AuthenticationPage() {
   const bgImage = getPlaceholderImage("auth-background");
@@ -34,6 +34,7 @@ export default function AuthenticationPage() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const auth = useAuth();
+  const firestore = useFirestore();
 
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -47,12 +48,25 @@ export default function AuthenticationPage() {
 
   const handleLogin = async () => {
     try {
-      await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
+      const userCredential = await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
+      
+      if (isPartnerFlow) {
+        const partnerDocRef = doc(firestore, "partners", userCredential.user.uid);
+        const partnerDoc = await getDoc(partnerDocRef);
+        if (partnerDoc.exists() && partnerDoc.data().status === 'approved') {
+          router.push('/partner/dashboard');
+        } else {
+           router.push('/partner/verification');
+        }
+      } else {
+        router.push('/dashboard');
+      }
+
       toast({
         title: "Login Successful",
         description: "Redirecting to your dashboard...",
       });
-      router.push(redirectPath);
+
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -73,23 +87,33 @@ export default function AuthenticationPage() {
     }
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, signupEmail, signupPassword);
-      await sendEmailVerification(userCredential.user);
-      
-      // Here you would typically save the user's role to Firestore.
-      // e.g. await setDoc(doc(firestore, "users", userCredential.user.uid), { role: isPartnerFlow ? "partner" : "customer" });
+      const user = userCredential.user;
 
       if (isPartnerFlow) {
+        await setDoc(doc(firestore, "partners", user.uid), { 
+          uid: user.uid,
+          email: user.email,
+          name: signupName,
+          role: "partner",
+          status: "pending" 
+        });
         toast({
             title: "Account Created!",
             description: "Please complete your profile to continue.",
         });
         router.push('/partner/onboarding');
       } else {
+        await setDoc(doc(firestore, "customers", user.uid), { 
+          uid: user.uid,
+          email: user.email,
+          name: signupName,
+          role: "customer"
+        });
+        await sendEmailVerification(user);
         toast({
             title: "Account Created!",
             description: "A verification email has been sent. Please check your inbox.",
         });
-        // Stay on login for customers for email verification.
       }
     } catch (error: any) {
        toast({
@@ -103,11 +127,47 @@ export default function AuthenticationPage() {
   const handleGoogleLogin = async () => {
     const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
-      toast({
-        title: "Signing in with Google...",
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      if (isPartnerFlow) {
+        const partnerDocRef = doc(firestore, "partners", user.uid);
+        const partnerDoc = await getDoc(partnerDocRef);
+
+        if (partnerDoc.exists()) {
+           if (partnerDoc.data().status === 'approved') {
+             router.push('/partner/dashboard');
+           } else {
+             router.push('/partner/verification');
+           }
+        } else {
+           await setDoc(partnerDocRef, {
+             uid: user.uid,
+             email: user.email,
+             name: user.displayName,
+             role: "partner",
+             status: "pending"
+           });
+           router.push('/partner/onboarding');
+        }
+      } else {
+         const customerDocRef = doc(firestore, "customers", user.uid);
+         const customerDoc = await getDoc(customerDocRef);
+         if (!customerDoc.exists()) {
+              await setDoc(customerDocRef, {
+                uid: user.uid,
+                email: user.email,
+                name: user.displayName,
+                role: "customer"
+              });
+         }
+        router.push('/dashboard');
+      }
+       toast({
+        title: "Sign-In Successful!",
+        description: "Redirecting...",
       });
-      router.push(isPartnerFlow ? "/partner/onboarding" : redirectPath);
+
     } catch (error: any) {
       toast({
         variant: "destructive",

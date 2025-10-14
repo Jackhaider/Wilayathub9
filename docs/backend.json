@@ -6,9 +6,13 @@
       "type": "object",
       "description": "Represents a customer using the WilayatHub app.",
       "properties": {
-        "id": {
+        "uid": {
           "type": "string",
-          "description": "Unique identifier for the customer entity."
+          "description": "Unique identifier for the customer, matching Firebase Auth UID."
+        },
+        "role": {
+          "type": "string",
+          "description": "User role, always 'customer' for this collection."
         },
         "firstName": {
           "type": "string",
@@ -33,12 +37,9 @@
         }
       },
       "required": [
-        "id",
-        "firstName",
-        "lastName",
+        "uid",
         "email",
-        "phoneNumber",
-        "address"
+        "role"
       ]
     },
     "Partner": {
@@ -47,9 +48,17 @@
       "type": "object",
       "description": "Represents a service provider (partner) on the WilayatHub app.",
       "properties": {
-        "id": {
+        "uid": {
           "type": "string",
-          "description": "Unique identifier for the partner entity."
+          "description": "Unique identifier for the partner, matching Firebase Auth UID."
+        },
+         "role": {
+          "type": "string",
+          "description": "User role, always 'partner' for this collection."
+        },
+        "status": {
+            "type": "string",
+            "description": "Approval status of the partner account (e.g., pending, approved, rejected)."
         },
         "firstName": {
           "type": "string",
@@ -78,13 +87,10 @@
         }
       },
       "required": [
-        "id",
-        "firstName",
-        "lastName",
+        "uid",
         "email",
-        "phoneNumber",
-        "serviceCategory",
-        "pricePerJob"
+        "role",
+        "status"
       ]
     },
     "Booking": {
@@ -237,7 +243,7 @@
           "schema": {
             "$ref": "#/backend/entities/Partner"
           },
-          "description": "Stores partner profiles. Uses path-based ownership: only the user with the matching {partnerId} (request.auth.uid) can read/write their own profile data.",
+          "description": "Stores partner profiles. Uses path-based ownership: only the user with the matching {partnerId} (request.auth.uid) can read/write their own profile data. The `status` field controls access to the main application.",
           "params": [
             {
               "name": "partnerId",
