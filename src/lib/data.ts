@@ -301,8 +301,8 @@ export const customerNavItems: NavItem[] = [
 export const partnerNavItems: NavItem[] = [
     { href: '/partner/dashboard', label: 'Home', iconName: 'Home' },
     { href: '/partner/earnings', label: 'Earnings', iconName: 'DollarSign' },
-    { href: '/favorites', label: 'Enquiries', iconName: 'Briefcase' },
-    { href: '/notifications', label: 'Listings', iconName: 'Bell' },
+    { href: '/partner/enquiries', label: 'Enquiries', iconName: 'Briefcase' },
+    { href: '/partner/listings', label: 'Listings', iconName: 'Bell' },
     { href: '/partner/profile', label: 'Profile', iconName: 'User' },
 ];
 
@@ -339,5 +339,7 @@ export const earningsData: Earning[] = [
   { month: "Nov", total: Math.floor(Math.random() * 5000) + 1000 },
   { month: "Dec", total: Math.floor(Math.random() * 5000) + 1000 },
 ];
+
+    
 
     

@@ -88,7 +88,36 @@ export default function PartnerDashboard() {
             )}
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Quick Actions</CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-2 gap-4">
+            <Button asChild variant="outline">
+              <Link href="/partner/listings/new">Add New Service</Link>
+            </Button>
+            <Button asChild variant="outline">
+              <Link href="/partner/enquiries">View My Enquiries</Link>
+            </Button>
+          </CardContent>
+        </Card>
+        
+        <Card className="bg-primary/10 border-primary">
+            <CardHeader>
+                <CardTitle>Promote Your Business</CardTitle>
+                <CardDescription>
+                Reach more customers on WilayatHub for just ₹99/-
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <Button>Learn More</Button>
+            </CardContent>
+        </Card>
+
       </div>
     </AppShell>
   );
 }
+
+    
