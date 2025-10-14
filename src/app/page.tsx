@@ -15,20 +15,18 @@ export default function SplashPage() {
 
   // 1. Effect for Location Fetching
   useEffect(() => {
-    // This effect runs only once to get the location.
-    if (location) return; // Already have a location, do nothing.
+    if (location) return;
 
     let isMounted = true;
     setStatus('Fetching your location...');
 
     const fetchAddress = async (latitude: number, longitude: number) => {
-      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+      const apiKey = process.env.GOOGLE_MAPS_API_KEY;
       if (!apiKey) {
         console.error("Google Maps API key is missing.");
         if (isMounted) {
             setError("Configuration error: API key is missing.");
             setStatus('Could not fetch location.');
-            // Set a default location so the app can proceed
             setLocation({ latitude: 0, longitude: 0, address: 'Location not found' });
         }
         return;
@@ -86,17 +84,14 @@ export default function SplashPage() {
     return () => {
         isMounted = false;
     }
-  }, [location, setLocation]); // Only re-run if location context changes.
+  }, [location, setLocation]);
 
   // 2. Effect for Redirection
   useEffect(() => {
-    // This effect handles redirection once all data is loaded.
     if (isUserLoading || !location) {
-      // If we are still loading user data or location, it's not time to redirect.
       return;
     }
 
-    // Both user and location are resolved, now we can redirect.
     if (user) {
       setStatus('Redirecting to dashboard...');
       router.push('/dashboard');
