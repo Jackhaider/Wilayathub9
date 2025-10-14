@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/carousel";
 import { serviceCategories, customerNavItems } from "@/lib/data";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
-import { ArrowRight, MapPin } from "lucide-react";
+import { ArrowRight, MapPin, Phone } from "lucide-react";
 import { useLocation } from "@/context/location-context";
 
 export default function CustomerDashboard() {
@@ -52,7 +52,7 @@ export default function CustomerDashboard() {
                             <h2 className="text-2xl md:text-4xl font-bold text-white">Get 20% off your first cleaning</h2>
                             <p className="text-white/80 mt-2">Use code FIRSTCLEAN at checkout.</p>
                             <Button asChild className="mt-4 w-fit">
-                                <Link href="/services/cleaning">Book Now <ArrowRight className="ml-2 h-4 w-4"/></Link>
+                                <Link href="/services/cleaning">View Services <ArrowRight className="ml-2 h-4 w-4"/></Link>
                             </Button>
                         </div>
                       </div>

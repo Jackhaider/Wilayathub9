@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { partners, serviceCategories, customerNavItems } from "@/lib/data";
 import { notFound } from "next/navigation";
-import { Filter, Star } from "lucide-react";
+import { Filter, Star, Phone } from "lucide-react";
 import { Rating } from "@/components/rating";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -91,7 +91,10 @@ export default function ServiceListPage({
             </CardContent>
             <CardFooter>
               <Button asChild className="w-full">
-                <Link href={`/book/${partner.id}`}>Book Now</Link>
+                <a href={`tel:${partner.phone}`}>
+                  <Phone className="mr-2 h-4 w-4" />
+                  Contact Now
+                </a>
               </Button>
             </CardFooter>
           </Card>

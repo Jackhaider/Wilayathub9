@@ -22,6 +22,7 @@ import {
   serviceCategories,
   customerNavItems,
 } from '@/lib/data';
+import { Phone } from 'lucide-react';
 
 function SearchResults() {
   const searchParams = useSearchParams();
@@ -139,7 +140,10 @@ function SearchResults() {
                 </CardContent>
                 <CardFooter>
                   <Button asChild className="w-full">
-                    <Link href={`/book/${partner.id}`}>Book Now</Link>
+                    <a href={`tel:${partner.phone}`}>
+                      <Phone className="mr-2 h-4 w-4" />
+                      Contact Now
+                    </a>
                   </Button>
                 </CardFooter>
               </Card>
