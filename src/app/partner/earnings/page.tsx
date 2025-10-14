@@ -26,9 +26,15 @@ import {
   ResponsiveContainer,
   XAxis,
   YAxis,
-  Tooltip
 } from "recharts";
-import { ChartTooltipContent } from "@/components/ui/chart";
+import { ChartTooltipContent, ChartContainer, ChartTooltip, type ChartConfig } from "@/components/ui/chart";
+
+const chartConfig = {
+  total: {
+    label: "Total",
+    color: "hsl(var(--primary))",
+  },
+} satisfies ChartConfig;
 
 export default function PartnerEarningsPage() {
   const totalEarnings = earningsData.reduce((acc, curr) => acc + curr.total, 0);
@@ -67,29 +73,29 @@ export default function PartnerEarningsPage() {
             <CardDescription>Your earnings over the last 12 months.</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={earningsData}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false}/>
-                  <XAxis
-                    dataKey="month"
-                    stroke="#888888"
-                    fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
-                  />
-                  <YAxis
-                    stroke="#888888"
-                    fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
-                    tickFormatter={(value) => `₹${value}`}
-                  />
-                  <Tooltip cursor={{fill: 'hsl(var(--muted))'}} content={<ChartTooltipContent />} />
-                  <Bar dataKey="total" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            <ChartContainer config={chartConfig} className="min-h-[200px] w-full h-[300px]">
+              <BarChart accessibilityLayer data={earningsData}>
+                <CartesianGrid vertical={false} />
+                <XAxis
+                  dataKey="month"
+                  tickLine={false}
+                  tickMargin={10}
+                  axisLine={false}
+                />
+                <YAxis
+                  stroke="#888888"
+                  fontSize={12}
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(value) => `₹${value}`}
+                />
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent indicator="dot" />}
+                />
+                <Bar dataKey="total" fill="var(--color-total)" radius={4} />
+              </BarChart>
+            </ChartContainer>
           </CardContent>
         </Card>
 
