@@ -1,4 +1,5 @@
 
+
 import {
   Wrench,
   Zap,
@@ -205,27 +206,27 @@ export const partners: Partner[] = [
   { id: 'comp-shop-3', name: 'Geek Lappy', service: 'computer-shops', phone: '9821426602', location: 'Andheri', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-2')?.imageUrl || '' },
   { id: 'comp-shop-4', name: 'Ayaz (Blue Bird Computers)', service: 'computer-shops', phone: '9967664893 / +971 521215786', location: 'Mumbra', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-3')?.imageUrl || '' },
   { id: 'comp-shop-5', name: 'Altaf Bootwala', service: 'computer-shops', phone: '9821064462 / 7820306551 / 9920020969', location: 'Bandra', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-4')?.imageUrl || '' },
-  { id: 'comp-shop-6', name: 'Ali Asgar H. Panjwani', service: 'computer-shops', phone: '8097860140', location: 'Kurla', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-1')?.imageUrl || '' },
+  { id: 'comp-shop-6', name: 'Ali Asgar H. Panjwani - Refurbished Computer', service: 'computer-shops', phone: '8097860140', location: 'Kurla', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-1')?.imageUrl || '' },
   { id: 'comp-shop-7', name: 'Afzal Jassani - IT Support', service: 'computer-shops', phone: '7302518148 / 7977203537', location: 'Kurla', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-2')?.imageUrl || '' },
   { id: 'comp-shop-8', name: 'Aadil', service: 'computer-shops', phone: '8879334601', location: 'Mumbra', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-3')?.imageUrl || '' },
   { id: 'counselor-1', name: 'Sharmin S Merchant', service: 'counselor-psychologist', phone: '9769543882', location: 'Mazgaon', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-4')?.imageUrl || '' },
   { id: 'counselor-2', name: 'Mohaddesa Dhamani Patel', service: 'counselor-psychologist', phone: '7304354110', location: 'Mumbra', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-1')?.imageUrl || '' },
   { id: 'crockery-1', name: 'Home & Kitchen Products - ONLINE HUB - Mrs. Ishrat Rawjee', service: 'crockery', phone: '9987135125', location: 'Versova, Andheri west', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-2')?.imageUrl || '' },
   { id: 'crockery-2', name: 'Mohammed Baqir Sayed', service: 'crockery', phone: '9773977647', location: 'Kurla West', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-3')?.imageUrl || '' },
-  { id: 'dairy-1', name: 'Masarrat Contractor - Pure Ghee', service: 'dairy', phone: '9820209967', location: 'Versova, Andheri', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-4')?.imageUrl || '' },
-  { id: 'delivery-1', name: 'Ali Imran Moosa', service: 'delivery-services', phone: '9702861472', location: '24/7 - all India Circle', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-1')?.imageUrl || '' },
-  { id: 'design-1', name: 'Amaan mirza', service: 'designing', phone: '9372963469', location: '', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-2')?.imageUrl || '' },
-  { id: 'design-2', name: 'Zoheb', service: 'designing', phone: '9833697242', location: '', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-3')?.imageUrl || '' },
+  { id: 'dairy-1', name: 'Masarrat Contractor - Pure Ghee - Healthy Treat', service: 'dairy', phone: '9820209967', location: 'Versova, Andheri', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-4')?.imageUrl || '' },
+  { id: 'delivery-1', name: 'Ali Imran Moosa', service: 'delivery-services', phone: '9702861472', location: '24/7 - all India Circle - Train / Tatkal Ticket - Sale Relocation', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-1')?.imageUrl || '' },
+  { id: 'design-1', name: 'Amaan mirza', service: 'designing', phone: '9372963469', location: 'Making business card logo invitation card and wedding card', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-2')?.imageUrl || '' },
+  { id: 'design-2', name: 'Zoheb', service: 'designing', phone: '9833697242', location: 'Graphic Designer', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-3')?.imageUrl || '' },
   { id: 'design-3', name: 'Tanveer Sayed', service: 'designing', phone: '8779790625', location: 'All over Mumbai', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-4')?.imageUrl || '' },
   { id: 'design-4', name: 'Mohammed Zamaan Variyala', service: 'designing', phone: '7208126927', location: 'Kurla', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-1')?.imageUrl || '' },
-  { id: 'design-5', name: 'Mohamad Abbas Gabhrani', service: 'designing', phone: '8268913267', location: '', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-2')?.imageUrl || '' },
+  { id: 'design-5', name: 'Mohamad Abbas Gabhrani', service: 'designing', phone: '8268913267', location: 'Social Media Marketing & Website Designing', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-2')?.imageUrl || '' },
   { id: 'design-6', name: 'Khan Mohammad Ali', service: 'designing', phone: '8779934001', location: 'Mumbra', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-3')?.imageUrl || '' },
   { id: 'design-7', name: 'Fatima Bhimani', service: 'designing', phone: '9820921644', location: 'Mumbai', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-4')?.imageUrl || '' },
   { id: 'design-8', name: 'Fasihul Hasan Rizvi', service: 'designing', phone: '9224382332', location: 'Mumbra', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-1')?.imageUrl || '' },
   { id: 'design-9', name: 'Azhar', service: 'designing', phone: '8169404322', location: 'Govandi', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-2')?.imageUrl || '' },
-  { id: 'design-10', name: 'Asif Shaikh', service: 'designing', phone: '8108782025', location: '', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-3')?.imageUrl || '' },
-  { id: 'design-11', name: 'Abbas Farishta', service: 'designing', phone: '7700051282', location: '', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-4')?.imageUrl || '' },
-  { id: 'design-12', name: 'Mohammed Taqeeb Rizvi', service: 'designing', phone: '8169021830', location: '', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-1')?.imageUrl || '' },
+  { id: 'design-10', name: 'Asif Shaikh', service: 'designing', phone: '8108782025', location: 'Graphic Designer', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-3')?.imageUrl || '' },
+  { id: 'design-11', name: 'Abbas Farishta', service: 'designing', phone: '7700051282', location: 'Graphic Designer', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-4')?.imageUrl || '' },
+  { id: 'design-12', name: 'Mohammed Taqeeb Rizvi', service: 'designing', phone: '8169021830', location: 'Graphic Designer', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-1')?.imageUrl || '' },
   { id: 'design-13', name: 'Hashim Raza - Unique Arts', service: 'designing', phone: '9870563724 / 7385110110', location: 'Samuel St, Mumbai', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-2')?.imageUrl || '' },
   { id: 'disposal-1', name: 'Sarfaraz Dildir Sayyed', service: 'disposals', phone: '9892136258', location: 'Mumbra', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-3')?.imageUrl || '' },
   { id: 'disposal-2', name: 'Haidery', service: 'disposals', phone: '7715810154', location: 'Dongri', ...generateRandomData(), avatarUrl: getPlaceholderImage('avatar-4')?.imageUrl || '' },
@@ -276,6 +277,7 @@ export interface Booking {
     service: ServiceCategory;
     date: Date;
     status: 'Active' | 'Completed' | 'Cancelled' | 'Requested' | 'On the way';
+    rating?: number;
 }
 
 // Find a partner and service for bookings, defaulting to first if not found
@@ -285,9 +287,9 @@ const getServiceById = (id: string) => serviceCategories.find(s => s.id === id) 
 
 export const bookings: Booking[] = [
     { id: 'booking1', partner: getPartnerById('acc-2'), service: getServiceById('accountant'), date: new Date('2024-08-15T10:00:00'), status: 'Active' },
-    { id: 'booking2', partner: getPartnerById('adv-1'), service: getServiceById('advocate'), date: new Date('2024-08-14T14:30:00'), status: 'Completed' },
-    { id: 'booking3', partner: getPartnerById('elec-1'), service: getServiceById('electrician'), date: new Date('2024-07-20T09:00:00'), status: 'Completed' },
-    { id: 'booking4', partner: getPartnerById('car-driver-1'), service: getServiceById('driver'), date: new Date(), status: 'On the way' },
+    { id: 'booking2', partner: getPartnerById('adv-1'), service: getServiceById('advocate'), date: new Date('2024-08-14T14:30:00'), status: 'Completed', rating: 4 },
+    { id: 'booking3', partner: getPartnerById('elec-1'), service: getServiceById('electrician'), date: new Date('2024-07-20T09:00:00'), status: 'Completed', rating: 5 },
+    { id: 'booking4', partner: getPartnerById('car-driver-1'), service: getServiceById('driver'), date: new Date(), status: 'Active' },
     { id: 'booking5', partner: getPartnerById('carpenter-2'), service: getServiceById('carpenter'), date: new Date('2024-08-18T16:00:00'), status: 'Requested' },
 ];
 
@@ -344,9 +346,3 @@ export const earningsData: Earning[] = [
   { month: "Nov", total: Math.floor(Math.random() * 5000) + 1000 },
   { month: "Dec", total: Math.floor(Math.random() * 5000) + 1000 },
 ];
-
-    
-
-    
-
-    

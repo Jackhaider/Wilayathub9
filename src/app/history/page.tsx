@@ -1,4 +1,5 @@
 
+
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +14,7 @@ import {
 } from "@/components/ui/card";
 import { bookings, customerNavItems, Booking } from "@/lib/data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Phone, MessageSquare, MapPin } from "lucide-react";
+import { Phone, MessageSquare, MapPin, Star } from "lucide-react";
 import { format } from "date-fns";
 import { Rating } from "@/components/rating";
 
@@ -33,7 +34,7 @@ const BookingCard = ({ booking }: { booking: Booking }) => (
         </div>
       </div>
        <Badge variant={booking.status === 'Completed' ? 'secondary' : 'default'} 
-        className={booking.status === 'Active' ? 'bg-green-500' : booking.status === 'On the way' ? 'bg-blue-500' : ''}>
+        className={booking.status === 'Active' ? 'bg-green-500' : ''}>
          {booking.status}
        </Badge>
     </CardHeader>
@@ -41,14 +42,27 @@ const BookingCard = ({ booking }: { booking: Booking }) => (
       <div className="text-sm text-muted-foreground">
         {format(booking.date, "eeee, MMMM d, yyyy 'at' h:mm a")}
       </div>
+       {booking.rating && (
+          <div className="flex items-center gap-2 mt-2">
+            <p className="text-sm font-medium">Your Rating:</p>
+            <Rating rating={booking.rating} size={16} />
+          </div>
+        )}
     </CardContent>
     <CardFooter className="gap-2">
        {booking.status === "Completed" || booking.status === "Cancelled" ? (
+        <>
          <Button asChild variant="outline" size="sm">
             <a href={`tel:${booking.partner.phone}`}>
               <Phone className="mr-2 h-4 w-4" /> Contact Again
             </a>
           </Button>
+          {booking.status === "Completed" && !booking.rating && (
+            <Button variant="outline" size="sm">
+                <Star className="mr-2 h-4 w-4" /> Rate
+            </Button>
+            )}
+        </>
        ) : (
         <>
           <Button asChild variant="outline" size="sm">
@@ -88,5 +102,3 @@ export default function HistoryPage() {
     </AppShell>
   );
 }
-
-    
