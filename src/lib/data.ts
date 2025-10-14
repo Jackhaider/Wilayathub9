@@ -291,7 +291,7 @@ export interface NavItem {
 
 export const customerNavItems: NavItem[] = [
     { href: '/dashboard', label: 'Home', iconName: 'Home' },
-    { href: '/history', label: 'History', iconName: 'History' },
+    { href: '/history', label: 'My History', iconName: 'History' },
     { href: '/favorites', label: 'Favorites', iconName: 'Heart' },
     { href: '/notifications', label: 'Notifications', iconName: 'Bell' },
     { href: '/profile', label: 'Profile', iconName: 'User' },

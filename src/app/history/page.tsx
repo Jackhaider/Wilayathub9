@@ -87,7 +87,7 @@ const BookingCard = ({ booking }: { booking: Booking }) => (
 export default function HistoryPage() {
   return (
     <AppShell navItems={customerNavItems} userType="customer">
-      <h1 className="text-3xl font-bold tracking-tight">History</h1>
+      <h1 className="text-3xl font-bold tracking-tight">My History</h1>
         <div className="space-y-4 mt-4">
         {bookings.length > 0 ? (
             [...bookings]
