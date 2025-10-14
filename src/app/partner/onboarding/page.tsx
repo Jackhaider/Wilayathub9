@@ -27,6 +27,7 @@ import { UploadCloud, ArrowRight, ArrowLeft } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
+import { useLocation } from '@/context/location-context';
 
 interface OnboardingData {
   fullName: string;
@@ -47,6 +48,7 @@ export default function PartnerOnboardingPage() {
   const { toast } = useToast();
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
+  const { location } = useLocation();
 
   useEffect(() => {
     setIsClient(true);
@@ -60,6 +62,18 @@ export default function PartnerOnboardingPage() {
     const file = e.target.files?.[0];
     if (file) {
       handleInputChange(field, file.name);
+    }
+  };
+
+  const handleAutoDetect = () => {
+    if (location?.address) {
+      handleInputChange('serviceArea', location.address);
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Location Not Found",
+        description: "Could not automatically detect your location. Please enter it manually.",
+      });
     }
   };
 
@@ -229,7 +243,7 @@ export default function PartnerOnboardingPage() {
                     <Label htmlFor="serviceArea">Service Area</Label>
                     <div className="flex items-center gap-2">
                       <Input id="serviceArea" placeholder="e.g., Mumbra, Thane" value={formData.serviceArea || ''} onChange={(e) => handleInputChange('serviceArea', e.target.value)}/>
-                      <Button variant="outline">Auto-detect</Button>
+                      <Button variant="outline" onClick={handleAutoDetect}>Auto-detect</Button>
                     </div>
                   </div>
                   <div className="space-y-2">
