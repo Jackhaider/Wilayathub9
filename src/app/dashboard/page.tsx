@@ -18,13 +18,39 @@ import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { ArrowRight, MapPin, Phone } from "lucide-react";
 import { useLocation } from "@/context/location-context";
 
+const promotions = [
+  {
+    title: "COW GHEE",
+    description: "Fresh stock of pure COW GHEE IS AVAILABLE NOW<br/>750/- per kg",
+    cta: {
+      text: "CONTACT NOW",
+      href: "tel:9820209967"
+    },
+    image: getPlaceholderImage("promo-banner-1")
+  },
+  {
+    title: "Special Offer from Asif Bhai & Team!",
+    description: "Promote your business for just ₹99/- (Regular Price: ₹300/-)",
+     cta: {
+      text: "Contact Now",
+      href: "#" // You can replace this with the correct contact link
+    },
+    image: getPlaceholderImage("promo-banner-2")
+  },
+   {
+    title: "More Services Available",
+    description: "Explore a wide range of professional services for your needs.",
+     cta: {
+      text: "View Categories",
+      href: "/dashboard#categories"
+    },
+    image: getPlaceholderImage("promo-banner-3")
+  },
+]
+
+
 export default function CustomerDashboard() {
   const { location } = useLocation();
-  const promoImages = [
-    getPlaceholderImage("promo-banner-1"),
-    getPlaceholderImage("promo-banner-2"),
-    getPlaceholderImage("promo-banner-3"),
-  ];
 
   return (
     <AppShell navItems={customerNavItems} userType="customer">
@@ -36,26 +62,24 @@ export default function CustomerDashboard() {
 
         <Carousel className="w-full" opts={{ loop: true }}>
           <CarouselContent>
-            {promoImages.map((img, index) =>
-              img ? (
+            {promotions.map((promo, index) =>
+              promo.image ? (
                 <CarouselItem key={index}>
                   <Card className="overflow-hidden">
                     <CardContent className="p-0">
                       <div className="relative aspect-[2/1] w-full">
                         <Image
-                          src={img.imageUrl}
-                          alt={img.description}
+                          src={promo.image.imageUrl}
+                          alt={promo.image.description}
                           fill
                           className="object-cover"
-                          data-ai-hint={img.imageHint}
+                          data-ai-hint={promo.image.imageHint}
                         />
                          <div className="absolute inset-0 bg-black/40 flex flex-col justify-end p-6 md:p-8">
-                            <h2 className="text-2xl md:text-4xl font-bold text-white">COW GHEE</h2>
-                            <p className="text-white/80 mt-2">
-                                Fresh stock of pure COW GHEE IS AVAILABLE NOW<br/>750/- per kg
-                            </p>
+                            <h2 className="text-2xl md:text-4xl font-bold text-white" dangerouslySetInnerHTML={{ __html: promo.title }}></h2>
+                            <p className="text-white/80 mt-2" dangerouslySetInnerHTML={{ __html: promo.description }}></p>
                             <Button asChild className="mt-4 w-fit">
-                                <a href="tel:9820209967">CONTACT NOW</a>
+                                <a href={promo.cta.href}>{promo.cta.text}</a>
                             </Button>
                         </div>
                       </div>
@@ -69,7 +93,7 @@ export default function CustomerDashboard() {
           <CarouselNext className="absolute right-4" />
         </Carousel>
 
-        <Card>
+        <Card id="categories">
           <CardHeader>
             <CardTitle>Categories</CardTitle>
           </CardHeader>
