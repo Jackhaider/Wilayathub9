@@ -52,10 +52,10 @@ export default function CustomerDashboard() {
                          <div className="absolute inset-0 bg-black/40 flex flex-col justify-end p-6 md:p-8">
                             <h2 className="text-2xl md:text-4xl font-bold text-white">COW GHEE</h2>
                             <p className="text-white/80 mt-2">
-                                FRESH STOCK OF PURE DAIRY COW GHEE IS AVAILABLE NOW<br/>750/- per kg
+                                Fresh stock of pure COW GHEE IS AVAILABLE NOW<br/>750/- per kg
                             </p>
                             <Button asChild className="mt-4 w-fit">
-                                <a href="tel:9820209967">CONTACT: 9820209967</a>
+                                <a href="tel:9820209967">CONTACT NOW</a>
                             </Button>
                         </div>
                       </div>
