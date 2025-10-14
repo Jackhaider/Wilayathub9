@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from "next/link";
@@ -49,10 +50,12 @@ export default function CustomerDashboard() {
                           data-ai-hint={img.imageHint}
                         />
                          <div className="absolute inset-0 bg-black/40 flex flex-col justify-end p-6 md:p-8">
-                            <h2 className="text-2xl md:text-4xl font-bold text-white">Get 20% off your first cleaning</h2>
-                            <p className="text-white/80 mt-2">Use code FIRSTCLEAN at checkout.</p>
+                            <h2 className="text-2xl md:text-4xl font-bold text-white">COW GHEE</h2>
+                            <p className="text-white/80 mt-2">
+                                FRESH STOCK OF PURE DAIRY COW GHEE IS AVAILABLE NOW<br/>750/- per kg
+                            </p>
                             <Button asChild className="mt-4 w-fit">
-                                <Link href="/services/cleaning">View Services <ArrowRight className="ml-2 h-4 w-4"/></Link>
+                                <a href="tel:9820209967">CONTACT: 9820209967</a>
                             </Button>
                         </div>
                       </div>
