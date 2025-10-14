@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { Badge } from "@/components/ui/badge";
@@ -64,7 +65,7 @@ export default function PartnerDashboard() {
                   <div className="text-sm text-muted-foreground flex items-center">
                     <MapPin className="h-4 w-4 mr-1" /> 2.5 km away
                   </div>
-                  <div className="font-semibold text-lg">$50.00</div>
+                  <div className="font-semibold text-lg">₹{request.partner.price.toFixed(0)}</div>
                   <div className="flex gap-2 justify-end">
                     <Button variant="destructive" size="sm">
                       Reject

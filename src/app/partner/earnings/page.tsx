@@ -1,3 +1,4 @@
+
 "use client"
 
 import { AppShell } from "@/components/app-shell";
@@ -40,7 +41,7 @@ export default function PartnerEarningsPage() {
             <Card>
                 <CardHeader>
                     <CardDescription>Total Earnings</CardDescription>
-                    <CardTitle>${totalEarnings.toLocaleString()}</CardTitle>
+                    <CardTitle>₹{totalEarnings.toLocaleString()}</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <Button className="w-full">Withdraw</Button>
@@ -49,7 +50,7 @@ export default function PartnerEarningsPage() {
             <Card>
                 <CardHeader>
                     <CardDescription>This Month</CardDescription>
-                    <CardTitle>${(earningsData[new Date().getMonth()]?.total || 0).toLocaleString()}</CardTitle>
+                    <CardTitle>₹{(earningsData[new Date().getMonth()]?.total || 0).toLocaleString()}</CardTitle>
                 </CardHeader>
             </Card>
              <Card>
@@ -82,7 +83,7 @@ export default function PartnerEarningsPage() {
                     fontSize={12}
                     tickLine={false}
                     axisLine={false}
-                    tickFormatter={(value) => `$${value}`}
+                    tickFormatter={(value) => `₹${value}`}
                   />
                   <Tooltip cursor={{fill: 'hsl(var(--muted))'}} content={<ChartTooltipContent />} />
                   <Bar dataKey="total" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
@@ -109,17 +110,17 @@ export default function PartnerEarningsPage() {
                 <TableRow>
                   <TableCell>2023-08-15</TableCell>
                   <TableCell>Plumbing Service #12345</TableCell>
-                  <TableCell className="text-right text-green-500">+$45.00</TableCell>
+                  <TableCell className="text-right text-green-500">+₹45.00</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>2023-08-14</TableCell>
                   <TableCell>Withdrawal to Bank</TableCell>
-                  <TableCell className="text-right text-red-500">-$500.00</TableCell>
+                  <TableCell className="text-right text-red-500">-₹500.00</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>2023-08-12</TableCell>
                   <TableCell>Electrician Service #12342</TableCell>
-                  <TableCell className="text-right text-green-500">+$75.00</TableCell>
+                  <TableCell className="text-right text-green-500">+₹75.00</TableCell>
                 </TableRow>
               </TableBody>
             </Table>

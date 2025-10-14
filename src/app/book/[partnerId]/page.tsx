@@ -1,3 +1,4 @@
+
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { AppShell } from "@/components/app-shell";
@@ -118,16 +119,16 @@ export default function BookingPage({
                      <h4 className="font-semibold">Booking Summary</h4>
                      <div className="flex justify-between text-sm">
                          <span className="text-muted-foreground">Service Fee</span>
-                         <span>${partner.price.toFixed(2)}</span>
+                         <span>₹{partner.price.toFixed(2)}</span>
                      </div>
                       <div className="flex justify-between text-sm">
                          <span className="text-muted-foreground">Taxes & Fees</span>
-                         <span>${(partner.price * 0.1).toFixed(2)}</span>
+                         <span>₹{(partner.price * 0.1).toFixed(2)}</span>
                      </div>
                      <Separator/>
                      <div className="flex justify-between font-bold">
                          <span>Total</span>
-                         <span>${(partner.price * 1.1).toFixed(2)}</span>
+                         <span>₹{(partner.price * 1.1).toFixed(2)}</span>
                      </div>
                 </CardContent>
                 <CardContent>

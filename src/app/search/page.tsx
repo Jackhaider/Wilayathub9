@@ -128,7 +128,7 @@ function SearchResults() {
                   <div className="flex justify-between text-sm text-muted-foreground">
                     <span>Base price</span>
                     <span className="font-semibold text-foreground">
-                      ${partner.price}
+                      ₹{partner.price}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm text-muted-foreground mt-2">

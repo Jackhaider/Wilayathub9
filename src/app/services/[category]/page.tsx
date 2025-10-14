@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
@@ -82,7 +83,7 @@ export default function ServiceListPage({
             <CardContent className="flex-grow">
               <div className="flex justify-between text-sm text-muted-foreground">
                 <span>Base price</span>
-                <span className="font-semibold text-foreground">${partner.price}</span>
+                <span className="font-semibold text-foreground">₹{partner.price}</span>
               </div>
               <div className="flex justify-between text-sm text-muted-foreground mt-2">
                 <span>Distance</span>
