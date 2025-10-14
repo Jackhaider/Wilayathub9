@@ -86,6 +86,10 @@ export default function PartnerOnboardingPage() {
                   <Input id="businessName" placeholder="e.g., John's Plumbing" />
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="contactNumber">Contact Number</Label>
+                  <Input id="contactNumber" type="tel" placeholder="e.g., +91 1234567890" />
+                </div>
+                <div className="space-y-2">
                     <Label htmlFor="serviceCategory">Service Category</Label>
                     <Select>
                         <SelectTrigger id="serviceCategory">
