@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { MapPin } from 'lucide-react';
 import { useLocation } from '@/context/location-context';
@@ -12,19 +12,26 @@ export default function SplashPage() {
   const { user, isUserLoading } = useUser();
   const [status, setStatus] = useState('Fetching your location...');
   const [error, setError] = useState<string | null>(null);
-  const [locationFetched, setLocationFetched] = useState(false);
+
+  // Refs to track if each async operation is complete
+  const locationFetched = useRef(false);
+  const authChecked = useRef(false);
 
   useEffect(() => {
-    // This function handles the redirection logic.
-    const redirectUser = () => {
-      if (!locationFetched || isUserLoading) {
-        return;
-      }
+    // Only set authChecked ref once when loading is finished.
+    if (!isUserLoading) {
+      authChecked.current = true;
+    }
 
-      if (user) {
-        router.push('/dashboard');
-      } else {
-        router.push('/login');
+    // Function to handle redirection
+    const attemptRedirect = () => {
+      // Redirect only if both location has been fetched and auth has been checked
+      if (locationFetched.current && authChecked.current) {
+        if (user) {
+          router.push('/dashboard');
+        } else {
+          router.push('/login');
+        }
       }
     };
 
@@ -34,7 +41,8 @@ export default function SplashPage() {
         setError("API key is missing.");
         setStatus('Could not fetch location. Using default.');
         setLocation({ latitude: 0, longitude: 0, address: 'Location not found' });
-        setLocationFetched(true);
+        locationFetched.current = true;
+        attemptRedirect();
         return;
       }
       
@@ -57,46 +65,42 @@ export default function SplashPage() {
         setStatus('Could not fetch address. Using default.');
         setLocation({ latitude, longitude, address: 'Address not found' });
       } finally {
-        setLocationFetched(true);
+        locationFetched.current = true;
+        attemptRedirect();
       }
     };
-
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          fetchAddress(latitude, longitude);
-        },
-        (err) => {
-          console.error(err);
-          setStatus('Could not fetch location. Using default.');
-          setError('Please enable location access.');
-          setLocation({ latitude: 0, longitude: 0, address: 'Location not found' });
-          setLocationFetched(true);
-        },
-        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
-      );
-    } else {
-      setStatus('Geolocation is not supported. Using default.');
-      setError('Geolocation is not supported by your browser.');
-      setLocation({ latitude: 0, longitude: 0, address: 'Location not supported' });
-      setLocationFetched(true);
+    
+    // Check if location has already been fetched to avoid re-running
+    if (!locationFetched.current) {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude, longitude } = position.coords;
+              fetchAddress(latitude, longitude);
+            },
+            (err) => {
+              console.error(err);
+              setStatus('Could not fetch location. Using default.');
+              setError('Please enable location access.');
+              setLocation({ latitude: 0, longitude: 0, address: 'Location not found' });
+              locationFetched.current = true;
+              attemptRedirect();
+            },
+            { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+          );
+        } else {
+          setStatus('Geolocation is not supported. Using default.');
+          setError('Geolocation is not supported by your browser.');
+          setLocation({ latitude: 0, longitude: 0, address: 'Location not supported' });
+          locationFetched.current = true;
+          attemptRedirect();
+        }
     }
+    
+    // Always attempt to redirect in case one of the dependencies changed and conditions are now met.
+    attemptRedirect();
 
-    redirectUser();
-
-  }, [router, setLocation, locationFetched, isUserLoading, user]);
-  
-    useEffect(() => {
-    // Second effect to handle redirection after state updates.
-    if (!isUserLoading && locationFetched) {
-      if (user) {
-        router.push('/dashboard');
-      } else {
-        router.push('/login');
-      }
-    }
-  }, [isUserLoading, locationFetched, user, router]);
+  }, [isUserLoading, user, router, setLocation]);
 
 
   return (
