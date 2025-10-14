@@ -58,6 +58,7 @@ import {
   History,
   Heart,
   DollarSign,
+  UploadCloud,
   type Icon as LucideIconType,
 } from "lucide-react";
 import { getPlaceholderImage } from "./placeholder-images";
@@ -302,9 +303,15 @@ export const partnerNavItems: NavItem[] = [
     { href: '/partner/dashboard', label: 'Home', iconName: 'Home' },
     { href: '/partner/earnings', label: 'Earnings', iconName: 'DollarSign' },
     { href: '/partner/enquiries', label: 'Enquiries', iconName: 'Briefcase' },
-    { href: '/partner/listings', label: 'Listings', iconName: 'Bell' },
+    { href: '/partner/listings', label: 'Listings', iconName: 'Package' },
     { href: '/partner/profile', label: 'Profile', iconName: 'User' },
 ];
+
+export const partnerOnboardingNavItems: NavItem[] = [
+    { href: '/partner/onboarding', label: 'Onboarding', iconName: 'FileText' },
+    { href: '/', label: 'Exit', iconName: 'Home' },
+];
+
 
 export interface ChatMessage {
     id: string;

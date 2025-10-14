@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { Menu, Search, User, Home, Bell, DollarSign, Briefcase, History, Heart } from "lucide-react";
+import { Menu, Search, User, Home, Bell, DollarSign, Briefcase, History, Heart, Package, FileText } from "lucide-react";
 import type { NavItem } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,8 @@ const iconComponents: { [key: string]: React.ElementType } = {
   DollarSign,
   Briefcase,
   Heart,
+  Package,
+  FileText,
 };
 
 export function AppShell({ navItems, children, userType }: AppShellProps) {

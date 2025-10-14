@@ -76,15 +76,21 @@ export default function AuthenticationPage() {
       await sendEmailVerification(userCredential.user);
       
       // Here you would typically save the user's role to Firestore.
-      // For now, we'll just show a success message.
       // e.g. await setDoc(doc(firestore, "users", userCredential.user.uid), { role: isPartnerFlow ? "partner" : "customer" });
 
-      toast({
-        title: "Account Created!",
-        description: "A verification email has been sent. Please check your inbox.",
-      });
-      // For simplicity, we'll just stay on the login tab after signup.
-      // You might redirect to a "please verify your email" page in a real app.
+      if (isPartnerFlow) {
+        toast({
+            title: "Account Created!",
+            description: "Please complete your profile to continue.",
+        });
+        router.push('/partner/onboarding');
+      } else {
+        toast({
+            title: "Account Created!",
+            description: "A verification email has been sent. Please check your inbox.",
+        });
+        // Stay on login for customers for email verification.
+      }
     } catch (error: any) {
        toast({
         variant: "destructive",
@@ -101,7 +107,7 @@ export default function AuthenticationPage() {
       toast({
         title: "Signing in with Google...",
       });
-      router.push(redirectPath);
+      router.push(isPartnerFlow ? "/partner/onboarding" : redirectPath);
     } catch (error: any) {
       toast({
         variant: "destructive",
