@@ -1,9 +1,10 @@
+
 'use client';
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -30,6 +31,7 @@ import {
 export default function AuthenticationPage() {
   const bgImage = getPlaceholderImage("auth-background");
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
   const auth = useAuth();
 
@@ -39,6 +41,9 @@ export default function AuthenticationPage() {
   const [signupEmail, setSignupEmail] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
   const [signupConfirmPassword, setSignupConfirmPassword] = useState("");
+  
+  const isPartnerFlow = searchParams.get('as') === 'partner';
+  const redirectPath = isPartnerFlow ? "/partner/dashboard" : "/dashboard";
 
   const handleLogin = async () => {
     try {
@@ -47,7 +52,7 @@ export default function AuthenticationPage() {
         title: "Login Successful",
         description: "Redirecting to your dashboard...",
       });
-      router.push("/dashboard");
+      router.push(redirectPath);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -69,13 +74,17 @@ export default function AuthenticationPage() {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, signupEmail, signupPassword);
       await sendEmailVerification(userCredential.user);
+      
+      // Here you would typically save the user's role to Firestore.
+      // For now, we'll just show a success message.
+      // e.g. await setDoc(doc(firestore, "users", userCredential.user.uid), { role: isPartnerFlow ? "partner" : "customer" });
+
       toast({
         title: "Account Created!",
         description: "A verification email has been sent. Please check your inbox.",
       });
-      // Optionally, you can redirect the user to a page that tells them to verify their email.
-      // For now, we'll redirect to the login page.
-      // router.push("/verify-email");
+      // For simplicity, we'll just stay on the login tab after signup.
+      // You might redirect to a "please verify your email" page in a real app.
     } catch (error: any) {
        toast({
         variant: "destructive",
@@ -92,7 +101,7 @@ export default function AuthenticationPage() {
       toast({
         title: "Signing in with Google...",
       });
-      router.push("/dashboard");
+      router.push(redirectPath);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -117,7 +126,7 @@ export default function AuthenticationPage() {
 
             <TabsContent value="login">
               <CardHeader className="text-center">
-                <CardTitle className="text-2xl">Welcome Back</CardTitle>
+                <CardTitle className="text-2xl">{isPartnerFlow ? "Partner Login" : "Welcome Back"}</CardTitle>
                 <CardDescription>
                   Enter your credentials to access your account
                 </CardDescription>
@@ -164,7 +173,7 @@ export default function AuthenticationPage() {
 
             <TabsContent value="signup">
               <CardHeader className="text-center">
-                <CardTitle className="text-2xl">Create an Account</CardTitle>
+                <CardTitle className="text-2xl">{isPartnerFlow ? "Partner Sign Up" : "Create an Account"}</CardTitle>
                 <CardDescription>
                   Enter your information to create an account
                 </CardDescription>

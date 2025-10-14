@@ -57,6 +57,7 @@ import {
   BarChart,
   History,
   Heart,
+  DollarSign,
   type Icon as LucideIconType,
 } from "lucide-react";
 import { getPlaceholderImage } from "./placeholder-images";
@@ -298,10 +299,10 @@ export const customerNavItems: NavItem[] = [
 ];
 
 export const partnerNavItems: NavItem[] = [
-    { href: '/partner/dashboard', label: 'Dashboard', iconName: 'Home' },
+    { href: '/partner/dashboard', label: 'Home', iconName: 'Home' },
     { href: '/partner/earnings', label: 'Earnings', iconName: 'DollarSign' },
-    { href: '/favorites', label: 'Favorites', iconName: 'Heart' },
-    { href: '/notifications', label: 'Notifications', iconName: 'Bell' },
+    { href: '/favorites', label: 'Enquiries', iconName: 'Briefcase' },
+    { href: '/notifications', label: 'Listings', iconName: 'Bell' },
     { href: '/partner/profile', label: 'Profile', iconName: 'User' },
 ];
 
