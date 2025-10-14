@@ -2,8 +2,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Menu, Search, User, Home, Calendar, Bell, DollarSign } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
+import { Menu, Search, User, Home, Calendar, Bell, DollarSign, Briefcase } from "lucide-react";
 import type { NavItem } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -24,11 +25,21 @@ const iconComponents: { [key: string]: React.ElementType } = {
   Bell,
   User,
   DollarSign,
+  Briefcase,
 };
 
 export function AppShell({ navItems, children, userType }: AppShellProps) {
   const pathname = usePathname();
   const isMobile = useIsMobile();
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   const header = (
     <header className="flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
@@ -93,13 +104,15 @@ export function AppShell({ navItems, children, userType }: AppShellProps) {
         </SheetContent>
       </Sheet>
       <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-        <form className="ml-auto flex-1 sm:flex-initial">
+        <form onSubmit={handleSearch} className="ml-auto flex-1 sm:flex-initial">
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Search services..."
               className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
         </form>

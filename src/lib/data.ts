@@ -48,7 +48,13 @@ import {
   Waypoints,
   GraduationCap,
   Wifi,
-  SteeringWheel,
+  CarTaxiFront,
+  Glasses,
+  TestTube,
+  Bug,
+  Cat,
+  Frame,
+  BarChart,
   type Icon as LucideIconType,
 } from "lucide-react";
 import { getPlaceholderImage } from "./placeholder-images";
@@ -67,7 +73,7 @@ export const serviceCategories: ServiceCategory[] = [
     { id: "cleaning", name: "Cleaning", icon: Trash2 },
     { id: "chef", name: "Chef", icon: ChefHat },
     { id: "driver", name: "Driver", icon: Car },
-    { id: "auto-driver", name: "Auto Driver", icon: SteeringWheel },
+    { id: "auto-driver", name: "Auto Driver", icon: CarTaxiFront },
     { id: "barber", name: "Barber", icon: Scissors },
     { id: "beautician", name: "Beautician", icon: Sparkles },
     { id: "nurse", name: "Nurse", icon: HeartPulse },
@@ -121,7 +127,7 @@ export const serviceCategories: ServiceCategory[] = [
     { id: "opticals", name: "Opticals", icon: Glasses },
     { id: "packers-movers", name: "Packers & Movers", icon: Truck },
     { id: "passport", name: "Passport", icon: Newspaper },
-    { id: "pathalogy", name: "Pathalogy", icon: TestTube2 },
+    { id: "pathalogy", name: "Pathalogy", icon: TestTube },
     { id: "pest-control", name: "Pest Control", icon: Bug },
     { id: "pet-animals", name: "Pet & Animals", icon: Cat },
     { id: "photography-videography", name: "Photography/Videography", icon: Camera },
@@ -281,7 +287,7 @@ export const bookings: Booking[] = [
     { id: 'booking1', partner: getPartnerById('acc-2'), service: getServiceById('accountant'), date: new Date('2024-08-15T10:00:00'), status: 'Active' },
     { id: 'booking2', partner: getPartnerById('adv-1'), service: getServiceById('advocate'), date: new Date('2024-08-14T14:30:00'), status: 'Completed' },
     { id: 'booking3', partner: getPartnerById('elec-1'), service: getServiceById('electrician'), date: new Date('2024-07-20T09:00:00'), status: 'Completed' },
-    { id: 'booking4', partner: getPartnerById('driver-1'), service: getServiceById('driver'), date: new Date(), status: 'On the way' },
+    { id: 'booking4', partner: getPartnerById('car-driver-1'), service: getServiceById('driver'), date: new Date(), status: 'On the way' },
     { id: 'booking5', partner: getPartnerById('carpenter-2'), service: getServiceById('carpenter'), date: new Date('2024-08-18T16:00:00'), status: 'Requested' },
 ];
 
@@ -338,5 +344,7 @@ export const earningsData: Earning[] = [
   { month: "Nov", total: Math.floor(Math.random() * 5000) + 1000 },
   { month: "Dec", total: Math.floor(Math.random() * 5000) + 1000 },
 ];
+
+    
 
     
