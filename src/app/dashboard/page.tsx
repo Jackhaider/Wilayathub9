@@ -33,9 +33,18 @@ const promotions = [
     description: "Promote your business for just ₹99/- (Regular Price: ₹300/-)",
      cta: {
       text: "Contact Now",
-      href: "#" // You can replace this with the correct contact link
+      href: "#"
     },
     image: getPlaceholderImage("promo-banner-2")
+  },
+  {
+    title: "KARWANE MASOOMEEN",
+    description: "Ziyarat to Iran & Iraq on Yaum-e-Wiladat Imam Hussain (A.S) & Maula Abbas (A.S), Booking: ₹50,000 | Total: ₹1,30,000 | 22 Days (Jan 2026)",
+    cta: {
+      text: "Contact Now",
+      href: "#"
+    },
+    image: getPlaceholderImage("promo-banner-3")
   },
    {
     title: "More Services Available",
@@ -44,7 +53,7 @@ const promotions = [
       text: "View Categories",
       href: "/dashboard#categories"
     },
-    image: getPlaceholderImage("promo-banner-3")
+    image: getPlaceholderImage("promo-banner-1")
   },
 ]
 
