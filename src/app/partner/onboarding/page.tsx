@@ -90,33 +90,13 @@ export default function PartnerOnboardingPage() {
   };
 
   const handleSubmit = async () => {
-    try {
-      const response = await fetch("https://formspree.io/f/xyzdrded", {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-
-      if (response.ok) {
-        toast({
-          title: "Submission Received!",
-          description: "Your details have been sent for review. You will be notified upon approval.",
-        });
-        router.push('/partner/verification');
-      } else {
-        throw new Error("Failed to submit form.");
-      }
-    } catch (error) {
-      console.error("Form submission error:", error);
-      toast({
-        variant: "destructive",
-        title: "Submission Failed",
-        description: "Could not submit your details. Please try again later.",
-      });
-    }
+    // This function now simulates the submission process.
+    // A real implementation would send formData to your backend.
+    toast({
+      title: "Submission Received!",
+      description: "Your details have been submitted for review. You will be notified upon approval.",
+    });
+    router.push('/partner/verification');
   }
 
   const progressValue = (step / 3) * 100;
