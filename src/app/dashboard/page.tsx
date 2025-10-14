@@ -15,8 +15,9 @@ import {
 } from "@/components/ui/carousel";
 import { serviceCategories, customerNavItems } from "@/lib/data";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
-import { ArrowRight, MapPin, Phone } from "lucide-react";
+import { ArrowRight, ChevronDown, MapPin, Phone } from "lucide-react";
 import { useLocation } from "@/context/location-context";
+import { useState } from "react";
 
 const promotions = [
   {
@@ -60,6 +61,11 @@ const promotions = [
 
 export default function CustomerDashboard() {
   const { location } = useLocation();
+  const [showAllCategories, setShowAllCategories] = useState(false);
+
+  const initialCategories = serviceCategories.slice(0, 8);
+  const displayedCategories = showAllCategories ? serviceCategories : initialCategories;
+
 
   return (
     <AppShell navItems={customerNavItems} userType="customer">
@@ -108,7 +114,7 @@ export default function CustomerDashboard() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-              {serviceCategories.map((category) => (
+              {displayedCategories.map((category) => (
                 <Link
                   href={`/services/${category.id}`}
                   key={category.id}
@@ -125,6 +131,27 @@ export default function CustomerDashboard() {
                 </Link>
               ))}
             </div>
+             {!showAllCategories && serviceCategories.length > 8 && (
+              <div className="mt-6 flex justify-center">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowAllCategories(true)}
+                >
+                  See More
+                  <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+            )}
+            {showAllCategories && (
+                 <div className="mt-6 flex justify-center">
+                    <Button
+                    variant="outline"
+                    onClick={() => setShowAllCategories(false)}
+                    >
+                    See Less
+                    </Button>
+                </div>
+            )}
           </CardContent>
         </Card>
       </div>
