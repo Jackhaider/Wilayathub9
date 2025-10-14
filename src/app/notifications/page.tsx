@@ -13,24 +13,17 @@ import { customerNavItems } from "@/lib/data";
 const notifications = [
   {
     id: 1,
-    title: "Booking Confirmed",
-    message: "Your booking with John Doe for plumbing is confirmed for Aug 15.",
-    time: "2 hours ago",
+    title: "Ziyarat Karbala – Jan 2026",
+    message: "Limited seats available! Contact 9936318612",
+    time: "1 hour ago",
     read: false,
   },
   {
     id: 2,
-    title: "Partner Arrived",
-    message: "Mike Johnson has arrived at your location.",
-    time: "1 day ago",
-    read: true,
-  },
-  {
-    id: 3,
-    title: "Payment Successful",
-    message: "Your payment of $60 for cleaning service was successful.",
-    time: "3 days ago",
-    read: true,
+    title: "Fresh Tabarukh Available",
+    message: "Get yours before stock runs out. Order now: Call 9820209967",
+    time: "3 hours ago",
+    read: false,
   },
 ];
 
@@ -67,7 +60,7 @@ export default function NotificationsPage() {
                   </p>
                 </div>
                 {!notification.read && (
-                  <div className="h-2.5 w-2.5 rounded-full bg-accent mt-1"></div>
+                  <div className="h-2.5 w-2.5 rounded-full bg-primary mt-1"></div>
                 )}
               </li>
             ))}
