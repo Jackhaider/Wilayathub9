@@ -90,16 +90,33 @@ export default function PartnerOnboardingPage() {
   };
 
   const handleSubmit = async () => {
-    // In a real application, you would send this data to your backend
-    // to handle the verification and approval process.
-    console.log("Form data submitted for review:", formData);
-    
-    toast({
-      title: "Submission Received!",
-      description: "Your details have been sent for review. You will be notified upon approval.",
-    });
+    try {
+      const response = await fetch("https://formspree.io/f/xyzdrded", {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
 
-    router.push('/partner/verification');
+      if (response.ok) {
+        toast({
+          title: "Submission Received!",
+          description: "Your details have been sent for review. You will be notified upon approval.",
+        });
+        router.push('/partner/verification');
+      } else {
+        throw new Error("Failed to submit form.");
+      }
+    } catch (error) {
+      console.error("Form submission error:", error);
+      toast({
+        variant: "destructive",
+        title: "Submission Failed",
+        description: "Could not submit your details. Please try again later.",
+      });
+    }
   }
 
   const progressValue = (step / 3) * 100;
@@ -116,7 +133,7 @@ export default function PartnerOnboardingPage() {
         
         <Progress value={progressValue} className="w-full" />
 
-        {isClient && (
+        {isClient ? (
           <Card>
             {step === 1 && (
               <>
@@ -245,7 +262,7 @@ export default function PartnerOnboardingPage() {
               </>
             )}
           </Card>
-        )}
+        ) : null}
       </div>
     </AppShell>
   );
