@@ -67,17 +67,6 @@ export interface ServiceCategory {
 }
 
 export const serviceCategories: ServiceCategory[] = [
-    { id: "plumber", name: "Plumber", icon: Wrench },
-    { id: "electrician", name: "Electrician", icon: Zap },
-    { id: "carpenter", name: "Carpenter", icon: PenSquare },
-    { id: "painter", name: "Painter", icon: Palette },
-    { id: "cleaning", name: "Cleaning", icon: Trash2 },
-    { id: "chef", name: "Chef", icon: ChefHat },
-    { id: "driver", name: "Driver", icon: Car },
-    { id: "auto-driver", name: "Auto Driver", icon: CarTaxiFront },
-    { id: "barber", name: "Barber", icon: Scissors },
-    { id: "beautician", name: "Beautician", icon: Sparkles },
-    { id: "nurse", name: "Nurse", icon: HeartPulse },
     { id: "accountant", name: "Accountant", icon: Calculator },
     { id: "advocate", name: "Advocate", icon: Scale },
     { id: "attar-perfumes", name: "Attar & Perfumes", icon: FlaskConical },
@@ -346,3 +335,5 @@ export const earningsData: Earning[] = [
   { month: "Nov", total: Math.floor(Math.random() * 5000) + 1000 },
   { month: "Dec", total: Math.floor(Math.random() * 5000) + 1000 },
 ];
+
+    
