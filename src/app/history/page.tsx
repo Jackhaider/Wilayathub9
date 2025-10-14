@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { Badge } from "@/components/ui/badge";
@@ -10,11 +11,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { bookings, customerNavItems, Booking } from "@/lib/data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MessageSquare, MapPin } from "lucide-react";
+import { Phone, MessageSquare, MapPin } from "lucide-react";
 import { format } from "date-fns";
+import { Rating } from "@/components/rating";
 
 const BookingCard = ({ booking }: { booking: Booking }) => (
   <Card>
@@ -26,6 +27,10 @@ const BookingCard = ({ booking }: { booking: Booking }) => (
       <div className="flex-1">
         <CardTitle className="text-base">{booking.service.name}</CardTitle>
         <CardDescription>with {booking.partner.name}</CardDescription>
+        <div className="flex items-center gap-1">
+            <Rating rating={booking.partner.rating} size={16}/>
+            <span className="text-xs text-muted-foreground">{booking.partner.rating}</span>
+        </div>
       </div>
        <Badge variant={booking.status === 'Completed' ? 'secondary' : 'default'} 
         className={booking.status === 'Active' ? 'bg-green-500' : booking.status === 'On the way' ? 'bg-blue-500' : ''}>
@@ -38,7 +43,13 @@ const BookingCard = ({ booking }: { booking: Booking }) => (
       </div>
     </CardContent>
     <CardFooter className="gap-2">
-      {booking.status !== "Completed" && booking.status !== "Cancelled" && (
+       {booking.status === "Completed" || booking.status === "Cancelled" ? (
+         <Button asChild variant="outline" size="sm">
+            <a href={`tel:${booking.partner.phone}`}>
+              <Phone className="mr-2 h-4 w-4" /> Contact Again
+            </a>
+          </Button>
+       ) : (
         <>
           <Button asChild variant="outline" size="sm">
             <Link href={`/track/${booking.id}`}>
@@ -59,45 +70,23 @@ const BookingCard = ({ booking }: { booking: Booking }) => (
   </Card>
 );
 
-export default function MyBookingsPage() {
-  const activeBookings = bookings.filter(
-    (b) => b.status !== "Completed" && b.status !== "Cancelled"
-  );
-  const completedBookings = bookings.filter(
-    (b) => b.status === "Completed" || b.status === "Cancelled"
-  );
-
+export default function HistoryPage() {
   return (
     <AppShell navItems={customerNavItems} userType="customer">
-      <h1 className="text-3xl font-bold tracking-tight">My Bookings</h1>
-      <Tabs defaultValue="active" className="w-full">
-        <TabsList>
-          <TabsTrigger value="active">Active</TabsTrigger>
-          <TabsTrigger value="completed">History</TabsTrigger>
-        </TabsList>
-        <TabsContent value="active">
-          <div className="space-y-4 mt-4">
-            {activeBookings.length > 0 ? (
-              activeBookings.map((booking) => (
-                <BookingCard key={booking.id} booking={booking} />
-              ))
-            ) : (
-              <p>No active bookings.</p>
-            )}
-          </div>
-        </TabsContent>
-        <TabsContent value="completed">
-          <div className="space-y-4 mt-4">
-            {completedBookings.length > 0 ? (
-              completedBookings.map((booking) => (
-                <BookingCard key={booking.id} booking={booking} />
-              ))
-            ) : (
-              <p>No past bookings.</p>
-            )}
-          </div>
-        </TabsContent>
-      </Tabs>
+      <h1 className="text-3xl font-bold tracking-tight">History</h1>
+        <div className="space-y-4 mt-4">
+        {bookings.length > 0 ? (
+            [...bookings]
+            .sort((a, b) => b.date.getTime() - a.date.getTime())
+            .map((booking) => (
+            <BookingCard key={booking.id} booking={booking} />
+            ))
+        ) : (
+            <p>No history found.</p>
+        )}
+        </div>
     </AppShell>
   );
 }
+
+    

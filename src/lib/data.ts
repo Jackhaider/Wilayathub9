@@ -7,7 +7,6 @@ import {
   Trash2,
   Car,
   Home,
-  Calendar,
   Gift,
   User,
   Star,
@@ -55,6 +54,7 @@ import {
   Cat,
   Frame,
   BarChart,
+  History,
   type Icon as LucideIconType,
 } from "lucide-react";
 import { getPlaceholderImage } from "./placeholder-images";
@@ -299,7 +299,7 @@ export interface NavItem {
 
 export const customerNavItems: NavItem[] = [
     { href: '/dashboard', label: 'Home', iconName: 'Home' },
-    { href: '/bookings', label: 'My Bookings', iconName: 'Calendar' },
+    { href: '/history', label: 'History', iconName: 'History' },
     { href: '/notifications', label: 'Notifications', iconName: 'Bell' },
     { href: '/profile', label: 'Profile', iconName: 'User' },
 ];
@@ -344,6 +344,8 @@ export const earningsData: Earning[] = [
   { month: "Nov", total: Math.floor(Math.random() * 5000) + 1000 },
   { month: "Dec", total: Math.floor(Math.random() * 5000) + 1000 },
 ];
+
+    
 
     
 

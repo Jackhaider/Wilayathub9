@@ -1,3 +1,4 @@
+
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
@@ -20,7 +21,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   return (
     <div className="flex flex-col h-screen bg-background">
       <header className="flex items-center h-16 px-4 border-b shrink-0">
-        <Link href="/bookings" className="md:hidden">
+        <Link href="/history" className="md:hidden">
           <Button variant="ghost" size="icon">
             <ArrowLeft className="h-6 w-6" />
           </Button>
@@ -95,3 +96,5 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     </div>
   );
 }
+
+    
