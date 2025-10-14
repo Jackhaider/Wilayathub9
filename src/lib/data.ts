@@ -56,6 +56,7 @@ import {
   Frame,
   BarChart,
   History,
+  Heart,
   type Icon as LucideIconType,
 } from "lucide-react";
 import { getPlaceholderImage } from "./placeholder-images";
@@ -291,6 +292,7 @@ export interface NavItem {
 export const customerNavItems: NavItem[] = [
     { href: '/dashboard', label: 'Home', iconName: 'Home' },
     { href: '/history', label: 'History', iconName: 'History' },
+    { href: '/favorites', label: 'Favorites', iconName: 'Heart' },
     { href: '/notifications', label: 'Notifications', iconName: 'Bell' },
     { href: '/profile', label: 'Profile', iconName: 'User' },
 ];
@@ -298,6 +300,7 @@ export const customerNavItems: NavItem[] = [
 export const partnerNavItems: NavItem[] = [
     { href: '/partner/dashboard', label: 'Dashboard', iconName: 'Home' },
     { href: '/partner/earnings', label: 'Earnings', iconName: 'DollarSign' },
+    { href: '/favorites', label: 'Favorites', iconName: 'Heart' },
     { href: '/notifications', label: 'Notifications', iconName: 'Bell' },
     { href: '/partner/profile', label: 'Profile', iconName: 'User' },
 ];
