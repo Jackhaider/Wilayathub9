@@ -57,9 +57,9 @@ const BookingCard = ({ booking }: { booking: Booking }) => (
               <Phone className="mr-2 h-4 w-4" /> Contact Again
             </a>
           </Button>
-          {booking.status === "Completed" && !booking.rating && (
+          {booking.status === "Completed" && (
             <Button variant="outline" size="sm">
-                <Star className="mr-2 h-4 w-4" /> Rate
+                <Star className="mr-2 h-4 w-4" /> {booking.rating ? 'Edit Rating' : 'Rate'}
             </Button>
             )}
         </>
