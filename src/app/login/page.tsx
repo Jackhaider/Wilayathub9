@@ -3,11 +3,8 @@
 import { app } from '../../../Wilayathub3/firebaseConfig.js'; // Firebase config
 import {
   getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
-  sendEmailVerification
 } from 'firebase/auth';
 import {
   getFirestore,
@@ -33,97 +30,39 @@ export default function AuthenticationPage() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
 
-  // ✅ Initialize Firebase directly here
   const auth = getAuth(app);
   const firestore = getFirestore(app);
 
-  const [loginEmail, setLoginEmail] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
-  const [signupName, setSignupName] = useState('');
-  const [signupEmail, setSignupEmail] = useState('');
-  const [signupPassword, setSignupPassword] = useState('');
-  const [signupConfirmPassword, setSignupConfirmPassword] = useState('');
+  const [loginEmail, setLoginEmail] = useState('test@example.com');
+  const [loginPassword, setLoginPassword] = useState('password');
+  const [signupName, setSignupName] = useState('Test User');
+  const [signupEmail, setSignupEmail] = useState('test@example.com');
+  const [signupPassword, setSignupPassword] = useState('password');
+  const [signupConfirmPassword, setSignupConfirmPassword] = useState('password');
 
   const isPartnerFlow = searchParams.get('as') === 'partner';
   const redirectPath = isPartnerFlow ? '/partner/dashboard' : '/dashboard';
 
-  // ---------------- Login Function ----------------
+  // ---------------- Login Function (Simplified for Testing) ----------------
   const handleLogin = async () => {
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
+    toast({
+      title: 'Login Successful (Test Mode)',
+      description: 'Redirecting to your dashboard...',
+    });
+    router.push(redirectPath);
+  };
 
+  // ---------------- Signup Function (Simplified for Testing) ----------------
+  const handleCreateAccount = async () => {
+     toast({
+        title: 'Account Created! (Test Mode)',
+        description: isPartnerFlow ? 'Redirecting to onboarding.' : 'Redirecting to dashboard.',
+      });
       if (isPartnerFlow) {
-        const partnerDocRef = doc(firestore, 'partners', userCredential.user.uid);
-        const partnerDoc = await getDoc(partnerDocRef);
-        if (partnerDoc.exists() && partnerDoc.data().status === 'approved') {
-          router.push('/partner/dashboard');
-        } else {
-          router.push('/partner/verification');
-        }
+        router.push('/partner/onboarding');
       } else {
         router.push('/dashboard');
       }
-
-      toast({
-        title: 'Login Successful',
-        description: 'Redirecting to your dashboard...',
-      });
-    } catch (error: any) {
-      toast({
-        variant: 'destructive',
-        title: 'Login Failed',
-        description: error.message,
-      });
-    }
-  };
-
-  // ---------------- Signup Function ----------------
-  const handleCreateAccount = async () => {
-    if (signupPassword !== signupConfirmPassword) {
-      toast({
-        variant: 'destructive',
-        title: 'Passwords do not match',
-        description: 'Please check your password and try again.',
-      });
-      return;
-    }
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, signupEmail, signupPassword);
-      const user = userCredential.user;
-
-      if (isPartnerFlow) {
-        await setDoc(doc(firestore, 'partners', user.uid), {
-          uid: user.uid,
-          email: user.email,
-          name: signupName,
-          role: 'partner',
-          status: 'pending',
-        });
-        toast({
-          title: 'Account Created!',
-          description: 'Please complete your profile to continue.',
-        });
-        router.push('/partner/onboarding');
-      } else {
-        await setDoc(doc(firestore, 'customers', user.uid), {
-          uid: user.uid,
-          email: user.email,
-          name: signupName,
-          role: 'customer',
-        });
-        await sendEmailVerification(user);
-        toast({
-          title: 'Account Created!',
-          description: 'A verification email has been sent. Please check your inbox.',
-        });
-      }
-    } catch (error: any) {
-      toast({
-        variant: 'destructive',
-        title: 'Account Creation Failed',
-        description: error.message,
-      });
-    }
   };
 
   // ---------------- Google Login ----------------
@@ -230,7 +169,7 @@ export default function AuthenticationPage() {
                 <Input type="password" placeholder="Password" value={signupPassword} onChange={(e) => setSignupPassword(e.target.value)} required />
                 <Input type="password" placeholder="Confirm Password" value={signupConfirmPassword} onChange={(e) => setSignupConfirmPassword(e.target.value)} required />
                 <Button onClick={handleCreateAccount} className="w-full">Create Account</Button>
-                <Button variant="outline" onClick={handleGoogleLogin} className="w-full">
+                <Button variant="outline" onClick={handleGoogleLogin} className="w-all">
                   <GoogleIcon className="mr-2 h-4 w-4" /> Sign up with Google
                 </Button>
               </CardContent>
