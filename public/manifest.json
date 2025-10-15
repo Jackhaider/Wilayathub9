@@ -1,8 +1,11 @@
-
 {
   "name": "WilayatHub",
   "short_name": "WilayatHub",
   "description": "All Services. One Hub.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1A1A1A",
+  "theme_color": "#1A1A1A",
   "icons": [
     {
       "src": "/icon-192x192.png",
@@ -14,10 +17,5 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ],
-  "theme_color": "#1A1A1A",
-  "background_color": "#1A1A1A",
-  "start_url": "/",
-  "display": "standalone",
-  "orientation": "portrait"
+  ]
 }
