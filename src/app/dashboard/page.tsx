@@ -65,46 +65,46 @@ const promotions = [
 export default function CustomerDashboard() {
   const { location } = useLocation();
   const [showAllCategories, setShowAllCategories] = useState(false);
-  const { user, isUserLoading } = useUser();
+  // const { user, isUserLoading } = useUser();
   const router = useRouter();
 
-  useEffect(() => {
-    if (!isUserLoading && !user) {
-      router.push('/login');
-    }
-  }, [user, isUserLoading, router]);
+  // useEffect(() => {
+  //   if (!isUserLoading && !user) {
+  //     router.push('/login');
+  //   }
+  // }, [user, isUserLoading, router]);
 
   const initialCategories = serviceCategories.slice(0, 8);
   const displayedCategories = showAllCategories ? serviceCategories : initialCategories;
 
-  if (isUserLoading || !user) {
-    return (
-      <AppShell navItems={customerNavItems} userType="customer">
-        <div className="grid gap-8">
-          <Skeleton className="h-10 w-full" />
-          <Card>
-            <CardContent className="p-0">
-              <div className="relative aspect-[2/1] w-full">
-                <Skeleton className="h-full w-full" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <Skeleton className="h-8 w-48" />
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-                {[...Array(8)].map((_, i) => (
-                  <Skeleton key={i} className="h-32 w-full" />
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </AppShell>
-    );
-  }
+  // if (isUserLoading || !user) {
+  //   return (
+  //     <AppShell navItems={customerNavItems} userType="customer">
+  //       <div className="grid gap-8">
+  //         <Skeleton className="h-10 w-full" />
+  //         <Card>
+  //           <CardContent className="p-0">
+  //             <div className="relative aspect-[2/1] w-full">
+  //               <Skeleton className="h-full w-full" />
+  //             </div>
+  //           </CardContent>
+  //         </Card>
+  //         <Card>
+  //           <CardHeader>
+  //             <Skeleton className="h-8 w-48" />
+  //           </CardHeader>
+  //           <CardContent>
+  //             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+  //               {[...Array(8)].map((_, i) => (
+  //                 <Skeleton key={i} className="h-32 w-full" />
+  //               ))}
+  //             </div>
+  //           </CardContent>
+  //         </Card>
+  //       </div>
+  //     </AppShell>
+  //   );
+  // }
 
 
   return (
@@ -204,5 +204,3 @@ export default function CustomerDashboard() {
     </AppShell>
   );
 }
-
-    
