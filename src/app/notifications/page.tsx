@@ -1,3 +1,6 @@
+
+'use client';
+
 import { AppShell } from "@/components/app-shell";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,6 +12,10 @@ import {
 } from "@/components/ui/card";
 import { Bell, CheckCheck } from "lucide-react";
 import { customerNavItems } from "@/lib/data";
+import { useEffect } from "react";
+import { useUser } from "@/firebase";
+import { useRouter } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const notifications = [
   {
@@ -28,6 +35,43 @@ const notifications = [
 ];
 
 export default function NotificationsPage() {
+  const { user, isUserLoading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isUserLoading && !user) {
+      router.push('/login');
+    }
+  }, [user, isUserLoading, router]);
+
+  if (isUserLoading || !user) {
+    return (
+      <AppShell navItems={customerNavItems} userType="customer">
+        <div className="flex items-center justify-between">
+          <h1 className="text-3xl font-bold">Notifications</h1>
+          <Skeleton className="h-9 w-40" />
+        </div>
+        <Card>
+          <CardContent className="p-0">
+            <ul className="divide-y">
+              {[...Array(2)].map((_, i) => (
+                <li key={i} className="flex items-start gap-4 p-4">
+                  <Skeleton className="h-9 w-9 rounded-full" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-3 w-1/4" />
+                  </div>
+                  <Skeleton className="h-2.5 w-2.5 rounded-full" />
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      </AppShell>
+    );
+  }
+
   return (
     <AppShell navItems={customerNavItems} userType="customer">
       <div className="flex items-center justify-between">
@@ -77,3 +121,5 @@ export default function NotificationsPage() {
     </AppShell>
   );
 }
+
+    

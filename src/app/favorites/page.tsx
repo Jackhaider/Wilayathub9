@@ -1,4 +1,6 @@
 
+'use client';
+
 import { AppShell } from "@/components/app-shell";
 import {
   Card,
@@ -12,10 +14,52 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Phone, Heart } from "lucide-react";
 import { Rating } from "@/components/rating";
+import { useEffect } from "react";
+import { useUser } from "@/firebase";
+import { useRouter } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function FavoritesPage() {
+  const { user, isUserLoading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isUserLoading && !user) {
+      router.push('/login');
+    }
+  }, [user, isUserLoading, router]);
+
   // For demonstration, we'll just take the first few partners as "favorites"
   const favoritePartners = partners.slice(0, 4);
+
+  if (isUserLoading || !user) {
+    return (
+      <AppShell navItems={customerNavItems} userType="customer">
+        <div className="space-y-6">
+          <h1 className="text-3xl font-bold tracking-tight">Favorite Partners</h1>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {[...Array(3)].map((_, i) => (
+              <Card key={i} className="flex flex-col">
+                <CardHeader className="flex flex-row items-center gap-4">
+                  <Skeleton className="h-16 w-16 rounded-full" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-5 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </div>
+                </CardHeader>
+                <CardContent className="flex-grow">
+                  <Skeleton className="h-4 w-full" />
+                </CardContent>
+                <CardContent>
+                  <Skeleton className="h-10 w-full" />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </AppShell>
+    );
+  }
 
   return (
     <AppShell navItems={customerNavItems} userType="customer">
@@ -78,3 +122,5 @@ export default function FavoritesPage() {
     </AppShell>
   );
 }
+
+    

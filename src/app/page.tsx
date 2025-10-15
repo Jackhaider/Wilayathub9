@@ -22,7 +22,7 @@ export default function RoleSelectionPage() {
         <Button
           size="lg"
           className="w-full h-14 text-lg"
-          onClick={() => router.push('/dashboard')}
+          onClick={() => router.push('/login')}
         >
           Continue as Customer
         </Button>
@@ -43,3 +43,5 @@ export default function RoleSelectionPage() {
     </div>
   );
 }
+
+    

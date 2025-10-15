@@ -1,4 +1,5 @@
 
+'use client';
 
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
@@ -17,6 +18,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Phone, MessageSquare, MapPin, Star } from "lucide-react";
 import { format } from "date-fns";
 import { Rating } from "@/components/rating";
+import { useEffect } from "react";
+import { useUser } from "@/firebase";
+import { useRouter } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const BookingCard = ({ booking }: { booking: Booking }) => (
   <Card>
@@ -85,6 +90,44 @@ const BookingCard = ({ booking }: { booking: Booking }) => (
 );
 
 export default function HistoryPage() {
+  const { user, isUserLoading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isUserLoading && !user) {
+      router.push('/login');
+    }
+  }, [user, isUserLoading, router]);
+
+  if (isUserLoading || !user) {
+    return (
+      <AppShell navItems={customerNavItems} userType="customer">
+        <h1 className="text-3xl font-bold tracking-tight">My History</h1>
+        <div className="space-y-4 mt-4">
+          {[...Array(3)].map((_, i) => (
+            <Card key={i}>
+              <CardHeader className="flex flex-row items-center gap-4">
+                <Skeleton className="h-12 w-12 rounded-full" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                </div>
+                <Skeleton className="h-6 w-20" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-4 w-1/3" />
+              </CardContent>
+              <CardFooter className="gap-2">
+                <Skeleton className="h-9 w-24" />
+                <Skeleton className="h-9 w-24" />
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      </AppShell>
+    );
+  }
+
   return (
     <AppShell navItems={customerNavItems} userType="customer">
       <h1 className="text-3xl font-bold tracking-tight">My History</h1>
@@ -102,3 +145,5 @@ export default function HistoryPage() {
     </AppShell>
   );
 }
+
+    
