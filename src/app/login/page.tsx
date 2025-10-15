@@ -1,6 +1,6 @@
 'use client';
 
-import { app } from '/home/user/studio/Wilayathub3/firebaseConfig'; // Firebase config
+import { app } from '../../../Wilayathub3/firebaseConfig.js'; // Firebase config
 import {
   getAuth,
   createUserWithEmailAndPassword,
