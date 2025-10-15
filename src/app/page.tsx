@@ -1,47 +1,30 @@
 
 'use client';
 
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
 import { WilayatHubLogo } from '@/components/icons';
 
-export default function RoleSelectionPage() {
+export default function SplashScreen() {
   const router = useRouter();
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      router.push('/welcome');
+    }, 2500); // Redirect after 2.5 seconds
+
+    return () => clearTimeout(timer); // Cleanup the timer on unmount
+  }, [router]);
+
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background p-8 text-center">
+    <div className="flex h-screen w-screen flex-col items-center justify-center bg-background text-center animate-fade-in">
       <div className="flex flex-col items-center gap-4">
-        <WilayatHubLogo className="h-20 w-20 text-primary" />
-        <h1 className="text-4xl font-bold tracking-tight text-foreground">
+        <WilayatHubLogo className="h-24 w-24 text-primary" />
+        <h1 className="text-5xl font-bold tracking-tight text-foreground">
           WilayatHub
         </h1>
-        <p className="text-muted-foreground">All Services. One Hub.</p>
-      </div>
-
-      <div className="mt-12 w-full max-w-sm space-y-4">
-        <Button
-          size="lg"
-          className="w-full h-14 text-lg"
-          onClick={() => router.push('/login')}
-        >
-          Continue as Customer
-        </Button>
-        <Button
-          size="lg"
-          variant="outline"
-          className="w-full h-14 text-lg"
-          onClick={() => router.push('/partner')}
-        >
-          Continue as Partner
-        </Button>
-      </div>
-
-       <div className="absolute bottom-6 text-center text-xs text-muted-foreground">
-        <p>Choose your role to get started.</p>
-        <p>You can switch roles later from your profile.</p>
+        <p className="text-lg text-muted-foreground">All Services. One Hub.</p>
       </div>
     </div>
   );
 }
-
-    
