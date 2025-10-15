@@ -1,4 +1,8 @@
 
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { AppShell } from "@/components/app-shell";
 import {
   Card,
@@ -11,6 +15,16 @@ import { partnerOnboardingNavItems } from "@/lib/data";
 import { MailCheck } from "lucide-react";
 
 export default function VerificationPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      router.push('/partner/dashboard');
+    }, 5000); // 5 seconds
+
+    return () => clearTimeout(timer); // Cleanup timer on unmount
+  }, [router]);
+
   return (
     <AppShell navItems={partnerOnboardingNavItems} userType="partner">
       <div className="flex flex-col items-center justify-center h-full">
@@ -31,6 +45,7 @@ export default function VerificationPage() {
               approved. This usually takes 1-2 business days. After approval,
               you will be able to access your partner dashboard.
             </p>
+            <p className="text-sm text-primary mt-4">Redirecting to dashboard for testing...</p>
           </CardContent>
         </Card>
       </div>
