@@ -40,11 +40,9 @@ export default function TrackingPage({
           objectFit="cover"
           data-ai-hint={mapImage.imageHint}
         />
-        <div className="absolute top-4 left-4">
-            <AppShell navItems={customerNavItems} userType="customer">
-                {/* Empty AppShell to show header on mobile */}
-            </AppShell>
-        </div>
+    <div className="absolute top-4 left-4">
+      <AppShell navItems={customerNavItems} userType="customer">{/* provide empty children */}<></></AppShell>
+    </div>
       </div>
       <Card className="rounded-t-2xl -mt-4 z-10">
         <CardHeader className="text-center">

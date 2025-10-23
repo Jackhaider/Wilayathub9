@@ -1,0 +1,42 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.7.2'
+        classpath 'com.google.gms:google-services:4.4.2'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+apply from: "variables.gradle"
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+// Ensure all Java compilation in subprojects targets Java 17 to match the
+// JDK specified in gradle.properties (org.gradle.java.home).
+subprojects {
+    tasks.withType(org.gradle.api.tasks.compile.JavaCompile).configureEach {
+        sourceCompatibility = '17'
+        targetCompatibility = '17'
+        // Do not set options.release for Android projects; the Android Gradle
+        // plugin configures compilation against Android bootclasspath. We set
+        // sourceCompatibility/targetCompatibility above which is compatible with
+        // the plugin and JDK 17 specified via org.gradle.java.home.
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

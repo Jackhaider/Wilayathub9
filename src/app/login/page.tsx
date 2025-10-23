@@ -1,20 +1,11 @@
-'use client';
+"use client";
 
-import { app } from '../../../Wilayathub3/firebaseConfig.js'; // Firebase config
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-} from 'firebase/auth';
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  getDoc
-} from 'firebase/firestore';
+export const dynamic = 'force-dynamic';
+
+// Firebase is dynamically imported on the client to avoid server-side initialization during static export
 import Link from 'next/link';
-import { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -27,11 +18,20 @@ import { useToast } from '@/hooks/use-toast';
 export default function AuthenticationPage() {
   const bgImage = getPlaceholderImage('auth-background');
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const [isPartnerFlow, setIsPartnerFlow] = useState(false);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        setIsPartnerFlow(params.get('as') === 'partner');
+      } catch (e) {
+        setIsPartnerFlow(false);
+      }
+    }
+  }, []);
   const { toast } = useToast();
 
-  const auth = getAuth(app);
-  const firestore = getFirestore(app);
+  // auth and firestore will be acquired dynamically when needed (client-only)
 
   const [loginEmail, setLoginEmail] = useState('test@example.com');
   const [loginPassword, setLoginPassword] = useState('password');
@@ -40,16 +40,46 @@ export default function AuthenticationPage() {
   const [signupPassword, setSignupPassword] = useState('password');
   const [signupConfirmPassword, setSignupConfirmPassword] = useState('password');
 
-  const isPartnerFlow = searchParams.get('as') === 'partner';
   const redirectPath = isPartnerFlow ? '/partner/dashboard' : '/dashboard';
 
-  // ---------------- Login Function (Simplified for Testing) ----------------
+  
+
+  // ---------------- Login Function (Email/Password) ----------------
+  // Replaces the test-mode redirect with a real Firebase email/password sign-in.
+  // Dynamically imports firebase/auth and the client firebaseConfig to avoid SSR issues.
   const handleLogin = async () => {
-    toast({
-      title: 'Login Successful (Test Mode)',
-      description: 'Redirecting to your dashboard...',
-    });
-    router.push(redirectPath);
+    try {
+      // Use the project's initializeFirebase helper so we get the same Firebase App
+      // instance the rest of the app (FirebaseProvider) uses.
+      const [{ getAuth, signInWithEmailAndPassword }, { initializeFirebase }] = await Promise.all([
+        import('firebase/auth'),
+        import('@/firebase'),
+      ]);
+
+      const sdks = initializeFirebase();
+      const auth = getAuth(sdks.firebaseApp);
+
+      // Use the non-blocking approach consistent with other code paths (the provider
+      // listens for onAuthStateChanged). Call signInWithEmailAndPassword and allow
+      // the auth listener to update app state.
+      signInWithEmailAndPassword(auth, loginEmail, loginPassword);
+
+      toast({
+        title: 'Login Successful',
+        description: 'Redirecting to your dashboard...',
+      });
+
+      // Let onAuthStateChanged in FirebaseProvider pick up the user, then navigate.
+      router.push(redirectPath);
+    } catch (error: any) {
+      console.error('Email sign-in error:', error);
+      const code = error?.code || 'unknown';
+      toast({
+        variant: 'destructive',
+        title: 'Login Failed',
+        description: `${code}: ${error?.message || 'Unable to sign in.'}`,
+      });
+    }
   };
 
   // ---------------- Signup Function (Simplified for Testing) ----------------
@@ -67,8 +97,19 @@ export default function AuthenticationPage() {
 
   // ---------------- Google Login ----------------
   const handleGoogleLogin = async () => {
-    const provider = new GoogleAuthProvider();
     try {
+      // Dynamically import firebase modules on the client and use project initializer
+      const [{ getAuth, GoogleAuthProvider, signInWithPopup }, { getFirestore, doc, setDoc, getDoc }, { initializeFirebase }] = await Promise.all([
+        import('firebase/auth'),
+        import('firebase/firestore'),
+        import('@/firebase'),
+      ]);
+
+      const sdks = initializeFirebase();
+      const auth = sdks.auth; // use the same auth instance the provider uses
+      const firestore = sdks.firestore;
+
+      const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
