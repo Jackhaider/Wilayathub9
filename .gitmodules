@@ -1,0 +1,6 @@
+[submodule "Wilayathub3"]
+	path = Wilayathub3
+	url = https://github.com/username/Wilayathub3.git
+[submodule "perplexity-ext"]
+	path = perplexity-ext
+	url = https://github.com/username/perplexity-ext.git
