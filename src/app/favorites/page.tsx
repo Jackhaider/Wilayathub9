@@ -1,4 +1,3 @@
-
 'use client';
 
 import { AppShell } from "@/components/app-shell";
@@ -14,25 +13,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Phone, Heart } from "lucide-react";
 import { Rating } from "@/components/rating";
-import { useEffect } from "react";
-import { useUser } from "@/firebase";
-import { useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useUser } from "@/hooks/useUser"; // ✅ updated import path (not "@/firebase")
 
 export default function FavoritesPage() {
-  const { user, isUserLoading } = useUser();
-  const router = useRouter();
+  const { user, isUserLoading } = useUser(); // ✅ will always have test user
 
-  useEffect(() => {
-    if (!isUserLoading && !user) {
-      router.push('/login');
-    }
-  }, [user, isUserLoading, router]);
-
-  // For demonstration, we'll just take the first few partners as "favorites"
+  // For demo, take first few partners as "favorites"
   const favoritePartners = partners.slice(0, 4);
 
-  if (isUserLoading || !user) {
+  if (isUserLoading) {
     return (
       <AppShell navItems={customerNavItems} userType="customer">
         <div className="space-y-6">
@@ -88,11 +78,13 @@ export default function FavoritesPage() {
                     <Heart className="h-6 w-6 text-red-500" fill="currentColor" />
                   </Button>
                 </CardHeader>
+
                 <CardContent className="flex-grow">
-                   <p className="text-sm text-muted-foreground line-clamp-2">
-                        Specializes in {partner.service}.
-                    </p>
+                  <p className="text-sm text-muted-foreground line-clamp-2">
+                    Specializes in {partner.service}.
+                  </p>
                 </CardContent>
+
                 <CardContent>
                   <Button asChild className="w-full">
                     <a href={`tel:${partner.phone}`}>
@@ -107,14 +99,14 @@ export default function FavoritesPage() {
         ) : (
           <Card>
             <CardHeader>
-                <CardTitle>No Favorites Yet</CardTitle>
-                <CardDescription>
-                    You haven't added any partners to your favorites. Tap the heart icon to save a partner for later.
-                </CardDescription>
+              <CardTitle>No Favorites Yet</CardTitle>
+              <CardDescription>
+                You haven't added any partners to your favorites. Tap the heart icon to save one for later.
+              </CardDescription>
             </CardHeader>
-             <CardContent className="text-center py-12 text-muted-foreground">
-                <Heart className="mx-auto h-12 w-12"/>
-                <p className="mt-4">Your favorite partners will appear here.</p>
+            <CardContent className="text-center py-12 text-muted-foreground">
+              <Heart className="mx-auto h-12 w-12" />
+              <p className="mt-4">Your favorite partners will appear here.</p>
             </CardContent>
           </Card>
         )}
@@ -122,5 +114,3 @@ export default function FavoritesPage() {
     </AppShell>
   );
 }
-
-    

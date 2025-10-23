@@ -1,4 +1,3 @@
-
 'use client';
 
 import { AppShell } from "@/components/app-shell";
@@ -12,10 +11,8 @@ import {
 } from "@/components/ui/card";
 import { Bell, CheckCheck } from "lucide-react";
 import { customerNavItems } from "@/lib/data";
-import { useEffect } from "react";
-import { useUser } from "@/firebase";
-import { useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useUser } from "@/hooks/useUser"; // ✅ use custom hook for test user
 
 const notifications = [
   {
@@ -35,16 +32,9 @@ const notifications = [
 ];
 
 export default function NotificationsPage() {
-  const { user, isUserLoading } = useUser();
-  const router = useRouter();
+  const { user, isUserLoading } = useUser(); // ✅ test user
 
-  useEffect(() => {
-    if (!isUserLoading && !user) {
-      router.push('/login');
-    }
-  }, [user, isUserLoading, router]);
-
-  if (isUserLoading || !user) {
+  if (isUserLoading) {
     return (
       <AppShell navItems={customerNavItems} userType="customer">
         <div className="flex items-center justify-between">
@@ -81,6 +71,7 @@ export default function NotificationsPage() {
           Mark all as read
         </Button>
       </div>
+
       <Card>
         <CardContent className="p-0">
           <ul className="divide-y">
@@ -92,7 +83,7 @@ export default function NotificationsPage() {
                 }`}
               >
                 <div className="rounded-full bg-primary/10 p-2">
-                    <Bell className="h-5 w-5 text-primary" />
+                  <Bell className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex-1">
                   <p className="font-semibold">{notification.title}</p>
@@ -111,15 +102,16 @@ export default function NotificationsPage() {
           </ul>
         </CardContent>
       </Card>
+
       {notifications.length === 0 && (
-          <div className="text-center py-12 text-muted-foreground">
-              <Bell className="mx-auto h-12 w-12"/>
-              <p className="mt-4">No notifications yet.</p>
-              <p className="text-xs">We'll let you know when something important happens.</p>
-          </div>
+        <div className="text-center py-12 text-muted-foreground">
+          <Bell className="mx-auto h-12 w-12" />
+          <p className="mt-4">No notifications yet.</p>
+          <p className="text-xs">
+            We'll let you know when something important happens.
+          </p>
+        </div>
       )}
     </AppShell>
   );
 }
-
-    

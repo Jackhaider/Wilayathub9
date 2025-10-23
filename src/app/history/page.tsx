@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from "next/link";
@@ -18,10 +17,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Phone, MessageSquare, MapPin, Star } from "lucide-react";
 import { format } from "date-fns";
 import { Rating } from "@/components/rating";
-import { useEffect } from "react";
-import { useUser } from "@/firebase";
-import { useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useUser } from "@/hooks/useUser"; // ✅ Updated import path
 
 const BookingCard = ({ booking }: { booking: Booking }) => (
   <Card>
@@ -34,41 +31,45 @@ const BookingCard = ({ booking }: { booking: Booking }) => (
         <CardTitle className="text-base">{booking.service.name}</CardTitle>
         <CardDescription>with {booking.partner.name}</CardDescription>
         <div className="flex items-center gap-1">
-            <Rating rating={booking.partner.rating} size={16}/>
-            <span className="text-xs text-muted-foreground">{booking.partner.rating}</span>
+          <Rating rating={booking.partner.rating} size={16} />
+          <span className="text-xs text-muted-foreground">{booking.partner.rating}</span>
         </div>
       </div>
-       <Badge variant={booking.status === 'Completed' ? 'secondary' : 'default'} 
-        className={booking.status === 'Active' ? 'bg-green-500' : ''}>
-         {booking.status}
-       </Badge>
+      <Badge
+        variant={booking.status === 'Completed' ? 'secondary' : 'default'}
+        className={booking.status === 'Active' ? 'bg-green-500' : ''}
+      >
+        {booking.status}
+      </Badge>
     </CardHeader>
+
     <CardContent>
       <div className="text-sm text-muted-foreground">
         {format(booking.date, "eeee, MMMM d, yyyy 'at' h:mm a")}
       </div>
-       {booking.rating && (
-          <div className="flex items-center gap-2 mt-2">
-            <p className="text-sm font-medium">Your Rating:</p>
-            <Rating rating={booking.rating} size={16} />
-          </div>
-        )}
+      {booking.rating && (
+        <div className="flex items-center gap-2 mt-2">
+          <p className="text-sm font-medium">Your Rating:</p>
+          <Rating rating={booking.rating} size={16} />
+        </div>
+      )}
     </CardContent>
+
     <CardFooter className="gap-2">
-       {booking.status === "Completed" || booking.status === "Cancelled" ? (
+      {booking.status === "Completed" || booking.status === "Cancelled" ? (
         <>
-         <Button asChild variant="outline" size="sm">
+          <Button asChild variant="outline" size="sm">
             <a href={`tel:${booking.partner.phone}`}>
               <Phone className="mr-2 h-4 w-4" /> Contact Again
             </a>
           </Button>
           {booking.status === "Completed" && (
             <Button variant="outline" size="sm">
-                <Star className="mr-2 h-4 w-4" /> {booking.rating ? 'Edit Rating' : 'Rate'}
+              <Star className="mr-2 h-4 w-4" /> {booking.rating ? 'Edit Rating' : 'Rate'}
             </Button>
-            )}
+          )}
         </>
-       ) : (
+      ) : (
         <>
           <Button asChild variant="outline" size="sm">
             <Link href={`/track/${booking.id}`}>
@@ -82,24 +83,17 @@ const BookingCard = ({ booking }: { booking: Booking }) => (
           </Button>
         </>
       )}
-       {(booking.status === "Requested" || booking.status === "Active") && (
-           <Button variant="destructive" size="sm">Cancel</Button>
-       )}
+      {(booking.status === "Requested" || booking.status === "Active") && (
+        <Button variant="destructive" size="sm">Cancel</Button>
+      )}
     </CardFooter>
   </Card>
 );
 
 export default function HistoryPage() {
-  const { user, isUserLoading } = useUser();
-  const router = useRouter();
+  const { user, isUserLoading } = useUser(); // ✅ Always returns test user
 
-  useEffect(() => {
-    if (!isUserLoading && !user) {
-      router.push('/login');
-    }
-  }, [user, isUserLoading, router]);
-
-  if (isUserLoading || !user) {
+  if (isUserLoading) {
     return (
       <AppShell navItems={customerNavItems} userType="customer">
         <h1 className="text-3xl font-bold tracking-tight">My History</h1>
@@ -131,19 +125,17 @@ export default function HistoryPage() {
   return (
     <AppShell navItems={customerNavItems} userType="customer">
       <h1 className="text-3xl font-bold tracking-tight">My History</h1>
-        <div className="space-y-4 mt-4">
+      <div className="space-y-4 mt-4">
         {bookings.length > 0 ? (
-            [...bookings]
+          [...bookings]
             .sort((a, b) => b.date.getTime() - a.date.getTime())
             .map((booking) => (
-            <BookingCard key={booking.id} booking={booking} />
+              <BookingCard key={booking.id} booking={booking} />
             ))
         ) : (
-            <p>No history found.</p>
+          <p>No history found.</p>
         )}
-        </div>
+      </div>
     </AppShell>
   );
 }
-
-    
