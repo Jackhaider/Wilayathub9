@@ -2,6 +2,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
+import { AuthGuard } from "@/components/auth-guard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,8 +10,10 @@ import { bookings, chatMessages, customerNavItems } from "@/lib/data";
 import { ArrowLeft, Send, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export default function ChatPage({ params }: { params: { bookingId: string } }) {
-  const booking = bookings.find((b) => b.id === params.bookingId);
+export default async function ChatPage({ params }: { params: Promise<{ bookingId: string }> }) {
+  // Next.js 15: route params are a Promise in server components.
+  const { bookingId } = await params;
+  const booking = bookings.find((b) => b.id === bookingId);
 
   if (!booking) {
     notFound();
@@ -18,7 +21,9 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
   const { partner } = booking;
 
+  // Chat is rendered without the app shell, so it needs its own sign-in check.
   return (
+    <AuthGuard>
     <div className="flex flex-col h-screen bg-background">
       <header className="flex items-center h-16 px-4 border-b shrink-0">
         <Link href="/history" className="md:hidden">
@@ -94,6 +99,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         </div>
       </footer>
     </div>
+    </AuthGuard>
   );
 }
 

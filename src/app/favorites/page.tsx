@@ -14,10 +14,10 @@ import { Button } from "@/components/ui/button";
 import { Phone, Heart } from "lucide-react";
 import { Rating } from "@/components/rating";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useUser } from "@/hooks/useUser"; // ✅ updated import path (not "@/firebase")
+import { useUser } from "@/firebase";
 
 export default function FavoritesPage() {
-  const { user, isUserLoading } = useUser(); // ✅ will always have test user
+  const { user, isUserLoading } = useUser();
 
   // For demo, take first few partners as "favorites"
   const favoritePartners = partners.slice(0, 4);

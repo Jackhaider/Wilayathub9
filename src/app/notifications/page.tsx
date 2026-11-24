@@ -12,7 +12,7 @@ import {
 import { Bell, CheckCheck } from "lucide-react";
 import { customerNavItems } from "@/lib/data";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useUser } from "@/hooks/useUser"; // ✅ use custom hook for test user
+import { useUser } from "@/firebase";
 
 const notifications = [
   {
@@ -32,7 +32,7 @@ const notifications = [
 ];
 
 export default function NotificationsPage() {
-  const { user, isUserLoading } = useUser(); // ✅ test user
+  const { user, isUserLoading } = useUser();
 
   if (isUserLoading) {
     return (

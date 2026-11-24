@@ -16,12 +16,14 @@ import { Button } from "@/components/ui/button";
 import { Phone, MessageSquare, Star } from "lucide-react";
 import { Rating } from "@/components/rating";
 
-export default function TrackingPage({
+export default async function TrackingPage({
   params,
 }: {
-  params: { bookingId: string };
+  params: Promise<{ bookingId: string }>;
 }) {
-  const booking = bookings.find((b) => b.id === params.bookingId);
+  // Next.js 15: route params are a Promise in server components.
+  const { bookingId } = await params;
+  const booking = bookings.find((b) => b.id === bookingId);
   const mapImage = getPlaceholderImage("map-placeholder");
 
   if (!booking || !mapImage) {

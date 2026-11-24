@@ -54,8 +54,14 @@ service cloud.firestore {
       allow get: if isOwner(customerId);
       allow list: if false;
 
-      allow create: if isOwner(customerId) && request.resource.data.id == customerId;
-      allow update: if isExistingOwner(customerId) && request.resource.data.id == resource.data.id;
+      // A customer profile must describe the signed-in user and carry role 'customer'.
+      allow create: if isOwner(customerId)
+        && request.resource.data.id == customerId
+        && request.resource.data.uid == customerId
+        && request.resource.data.role == 'customer';
+      // Identity fields (id, uid, role) can never be changed, added or removed by the user.
+      allow update: if isExistingOwner(customerId)
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['id', 'uid', 'role']);
       allow delete: if isExistingOwner(customerId);
     }
 
@@ -80,9 +86,19 @@ service cloud.firestore {
       allow get: if isOwner(partnerId);
       allow list: if false;
 
-      allow create: if isOwner(partnerId) && request.resource.data.id == partnerId;
-      allow update: if isExistingOwner(partnerId) && request.resource.data.id == resource.data.id;
-      allow delete: if isExistingOwner(partnerId);
+      // A partner always starts as 'pending'. Approval (status -> 'approved') is done only by an
+      // admin with privileged access (Firebase console / Admin SDK), which bypasses these rules.
+      allow create: if isOwner(partnerId)
+        && request.resource.data.id == partnerId
+        && request.resource.data.uid == partnerId
+        && request.resource.data.role == 'partner'
+        && request.resource.data.status == 'pending';
+      // Privileged fields (id, uid, role, status) can never be changed, added or removed by the partner.
+      allow update: if isExistingOwner(partnerId)
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['id', 'uid', 'role', 'status']);
+      // Admin-only (Firebase console / Admin SDK). Otherwise a rejected partner could delete their
+      // profile and re-create it as 'pending', wiping the decision and any admin-set fields.
+      allow delete: if false;
     }
 
     /**
@@ -142,20 +158,21 @@ service cloud.firestore {
      * @principle Enforces document ownership for writes.
      */
     match /notifications/{notificationId} {
-      function isOwner(userId) {
-        return request.auth.uid == userId;
+      // Ownership comes from the stored document's userId field.
+      // (The previous version called isOwner(request.auth.uid), which compares the
+      // caller's uid with itself and therefore let ANY signed-in user read, edit or
+      // delete ANY notification.)
+      function isStoredOwner() {
+        return request.auth != null && resource != null && resource.data.userId == request.auth.uid;
       }
 
-      function isExistingOwner(userId) {
-        return isOwner(userId) && resource != null;
-      }
-
-      allow get: if isOwner(request.auth.uid);
+      allow get: if isStoredOwner();
       allow list: if false;
 
-      allow create: if request.auth.uid == request.resource.data.userId;
-      allow update: if isExistingOwner(request.auth.uid);
-      allow delete: if isExistingOwner(request.auth.uid);
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      // The owner may update their notification but cannot hand it to another user.
+      allow update: if isStoredOwner() && request.resource.data.userId == resource.data.userId;
+      allow delete: if isStoredOwner();
     }
   }
 }

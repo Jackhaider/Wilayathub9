@@ -15,12 +15,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Phone, MessageSquare, MapPin } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
-export default function ActiveJobPage({
+export default async function ActiveJobPage({
   params,
 }: {
-  params: { jobId: string };
+  params: Promise<{ jobId: string }>;
 }) {
-  const job = bookings.find((b) => b.id === params.jobId);
+  // Next.js 15: route params are a Promise in server components.
+  const { jobId } = await params;
+  const job = bookings.find((b) => b.id === jobId);
   const mapImage = getPlaceholderImage("map-placeholder");
 
   if (!job || !mapImage) {
