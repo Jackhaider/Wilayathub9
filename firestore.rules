@@ -96,7 +96,9 @@ service cloud.firestore {
       // Privileged fields (id, uid, role, status) can never be changed, added or removed by the partner.
       allow update: if isExistingOwner(partnerId)
         && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['id', 'uid', 'role', 'status']);
-      allow delete: if isExistingOwner(partnerId);
+      // Admin-only (Firebase console / Admin SDK). Otherwise a rejected partner could delete their
+      // profile and re-create it as 'pending', wiping the decision and any admin-set fields.
+      allow delete: if false;
     }
 
     /**
