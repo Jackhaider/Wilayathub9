@@ -40,10 +40,14 @@ export function AuthGuard({ children, accountType = 'customer' }: AuthGuardProps
   const firestore = useFirestore();
   const router = useRouter();
   const pathname = usePathname();
-  // For partner pages: the path that passed the partner check. Comparing it with the current
-  // pathname means a client-side navigation to another partner page is always re-checked.
-  const [partnerCheckedPath, setPartnerCheckedPath] = useState<string | null>(null);
-  const partnerChecked = accountType !== 'partner' || partnerCheckedPath === pathname;
+  // For partner pages: which user passed the partner check, on which path. Both must match the
+  // current values, so moving to another partner page OR the signed-in account changing
+  // (e.g. a different sign-in in another tab, which Firebase syncs to this tab) hides the
+  // content immediately and re-runs the check for the new user.
+  const [partnerPassed, setPartnerPassed] = useState<{ uid: string; path: string } | null>(null);
+  const partnerChecked =
+    accountType !== 'partner' ||
+    (!!user && partnerPassed?.uid === user.uid && partnerPassed.path === pathname);
   // Set when the partner profile could not be read (e.g. network error). Access stays denied,
   // but we must not wrongly treat a real partner as "not a partner".
   const [partnerCheckFailed, setPartnerCheckFailed] = useState(false);
@@ -76,7 +80,7 @@ export function AuthGuard({ children, accountType = 'customer' }: AuthGuardProps
             return;
           }
           const approved = snap.data().status === 'approved';
-          if (approved || allowedWhilePending(pathname)) setPartnerCheckedPath(pathname);
+          if (approved || allowedWhilePending(pathname)) setPartnerPassed({ uid: user.uid, path: pathname });
           else router.replace('/partner/verification');
         })
         .catch(() => {
