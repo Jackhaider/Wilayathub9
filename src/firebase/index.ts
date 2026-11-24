@@ -2,8 +2,8 @@
 
 import { firebaseConfig } from '@/firebase/config';
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore'
+import { connectAuthEmulator, getAuth } from 'firebase/auth';
+import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore'
 
 // IMPORTANT: DO NOT MODIFY THIS FUNCTION
 export function initializeFirebase() {
@@ -32,12 +32,21 @@ export function initializeFirebase() {
   return getSdks(getApp());
 }
 
+// Local testing only: when NEXT_PUBLIC_USE_FIREBASE_EMULATORS=true, talk to the Firebase
+// Auth and Firestore emulators instead of the real project (see README > Testing).
+let emulatorsConnected = false;
+
 export function getSdks(firebaseApp: FirebaseApp) {
-  return {
-    firebaseApp,
-    auth: getAuth(firebaseApp),
-    firestore: getFirestore(firebaseApp)
-  };
+  const auth = getAuth(firebaseApp);
+  const firestore = getFirestore(firebaseApp);
+
+  if (process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATORS === 'true' && !emulatorsConnected) {
+    emulatorsConnected = true;
+    connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });
+    connectFirestoreEmulator(firestore, '127.0.0.1', 8080);
+  }
+
+  return { firebaseApp, auth, firestore };
 }
 
 export * from './provider';

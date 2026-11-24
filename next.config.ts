@@ -22,7 +22,10 @@ const nextConfig: NextConfig = {
 
   // Environment variables for runtime
   env: {
-    NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY,
+    // Prefer the documented NEXT_PUBLIC_ name; fall back to the older GOOGLE_MAPS_API_KEY.
+    // (Previously only GOOGLE_MAPS_API_KEY was read, so setting NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+    // was silently overwritten with undefined.)
+    NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || process.env.GOOGLE_MAPS_API_KEY,
     NEXT_PUBLIC_FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
     NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
     NEXT_PUBLIC_FIREBASE_PROJECT_ID: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
