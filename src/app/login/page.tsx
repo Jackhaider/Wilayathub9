@@ -112,7 +112,14 @@ export default function AuthenticationPage() {
     setBusy(true);
     try {
       const { user } = await createUserWithEmailAndPassword(auth, signupEmail.trim(), signupPassword);
-      await updateProfile(user, { displayName: signupName.trim() });
+      // The account now exists. Saving the display name on the Auth profile is best-effort:
+      // the name is also written to the Firestore profile below, and failing here must not
+      // leave the user signed in without a profile document.
+      try {
+        await updateProfile(user, { displayName: signupName.trim() });
+      } catch (error) {
+        console.warn('Could not save display name on the auth profile:', (error as { code?: string })?.code ?? error);
+      }
       await finishSignIn(user, signupName.trim());
       toast({
         title: 'Account created',
