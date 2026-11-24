@@ -23,12 +23,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Rating } from "@/components/rating";
 import { Separator } from "@/components/ui/separator";
 
-export default function BookingPage({
+export default async function BookingPage({
   params,
 }: {
-  params: { partnerId: string };
+  params: Promise<{ partnerId: string }>;
 }) {
-  const partner = partners.find((p) => p.id === params.partnerId);
+  // Next.js 15: route params are a Promise in server components.
+  const { partnerId } = await params;
+  const partner = partners.find((p) => p.id === partnerId);
 
   if (!partner) {
     notFound();

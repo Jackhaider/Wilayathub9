@@ -26,12 +26,14 @@ import { Filter, Star, Phone } from "lucide-react";
 import { Rating } from "@/components/rating";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export default function ServiceListPage({
+export default async function ServiceListPage({
   params,
 }: {
-  params: { category: string };
+  params: Promise<{ category: string }>;
 }) {
-  const category = serviceCategories.find((c) => c.id === params.category);
+  // Next.js 15: route params are a Promise in server components.
+  const { category: categoryId } = await params;
+  const category = serviceCategories.find((c) => c.id === categoryId);
   if (!category) {
     notFound();
   }
