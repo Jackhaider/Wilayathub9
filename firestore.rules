@@ -18,7 +18,9 @@
  * @Key Security Decisions:
  * - Users can only read/write their own customer or partner profiles.
  * - Bookings and chat messages are accessible only to the customer and partner involved,
- *   determined by the booking's customerId and partnerId.
+ *   determined by the booking's customerId and partnerId, which can never be changed.
+ * - Only customers create bookings, only with approved partners; each role may change only
+ *   its own fields. Chat messages are sent as the signed-in user and cannot be edited or deleted.
  * - Listing of customer and partner profiles is prohibited.
  *
  * @Denormalization for Authorization:
@@ -102,50 +104,150 @@ service cloud.firestore {
     }
 
     /**
-     * @description Allows the customer and partner associated with a booking to read/write booking data.
+     * @description Bookings between one customer and one approved partner.
      * @path /bookings/{bookingId}
-     * @allow (get) request.auth.uid == 'user_abc' (if user_abc is customerId or partnerId in the booking)
-     * @allow (create, update, delete) request.auth.uid == 'user_abc' (if user_abc is customerId or partnerId in the booking)
-     * @deny (get) request.auth.uid == 'outsider'
-     * @principle Enforces shared access for booking participants.
+     * @allow (get, list) the booking's customer or partner (list queries must filter on customerId or partnerId)
+     * @allow (create) a customer, for themselves, with an approved partner, in status 'Requested'
+     * @allow (update) the partner moves the status forward; the customer cancels or rates a completed job
+     * @deny (update) anyone changing customerId, partnerId or any field outside their role
+     * @deny (delete) everyone (cancel via status instead; deletion is admin-only)
+     *
+     * Status values (src/lib/data.ts Booking.status) and who may change them:
+     *   partner:  Requested -> Active | Cancelled, Active -> On the way | Cancelled, On the way -> Completed
+     *   customer: Requested -> Cancelled, Active -> Cancelled
      */
     match /bookings/{bookingId} {
-      function isParticipant(customerId, partnerId) {
-        return request.auth.uid == customerId || request.auth.uid == partnerId;
+      function signedIn() {
+        return request.auth != null;
       }
 
-      function isExistingParticipant(customerId, partnerId) {
-        return isParticipant(customerId, partnerId) && resource != null;
+      function isBookingCustomer() {
+        return resource.data.customerId == request.auth.uid;
       }
 
-      allow get: if isParticipant(resource.data.customerId, resource.data.partnerId);
-      allow list: if false;
+      function isBookingPartner() {
+        return resource.data.partnerId == request.auth.uid;
+      }
 
-      allow create: if isParticipant(request.resource.data.customerId, request.resource.data.partnerId);
-      allow update: if isExistingParticipant(resource.data.customerId, resource.data.partnerId);
-      allow delete: if isExistingParticipant(resource.data.customerId, resource.data.partnerId);
+      function partnerPath(uid) {
+        return /databases/$(database)/documents/partners/$(uid);
+      }
+
+      function isApprovedPartner(uid) {
+        return exists(partnerPath(uid)) && get(partnerPath(uid)).data.status == 'approved';
+      }
+
+      function hasCustomerProfile(uid) {
+        return exists(/databases/$(database)/documents/customers/$(uid));
+      }
+
+      function optionalString(data, key, maxLength) {
+        return !(key in data) || (data[key] is string && data[key].size() <= maxLength);
+      }
+
+      function validNewBooking(data) {
+        return data.keys().hasAll(['customerId', 'partnerId', 'serviceId', 'scheduledAt', 'status', 'createdAt'])
+          && data.keys().hasOnly(['customerId', 'partnerId', 'serviceId', 'scheduledAt', 'status', 'createdAt', 'address', 'notes'])
+          && data.serviceId is string && data.serviceId.size() > 0 && data.serviceId.size() <= 100
+          && data.scheduledAt is timestamp
+          && data.createdAt == request.time
+          && data.status == 'Requested'
+          && optionalString(data, 'address', 500)
+          && optionalString(data, 'notes', 1000);
+      }
+
+      // Only `keys` may change (customerId and partnerId are never in that list, so they are
+      // immutable); an optional updatedAt must be the server time.
+      function onlyChanges(keys) {
+        let changed = request.resource.data.diff(resource.data).affectedKeys();
+        return changed.hasOnly(keys)
+          && (!('updatedAt' in changed) || request.resource.data.updatedAt == request.time);
+      }
+
+      function statusMove(from, to) {
+        return resource.data.status == from && request.resource.data.status == to;
+      }
+
+      function partnerAdvancesStatus() {
+        return isBookingPartner()
+          && isApprovedPartner(request.auth.uid)
+          && onlyChanges(['status', 'updatedAt'])
+          && (statusMove('Requested', 'Active')
+              || statusMove('Requested', 'Cancelled')
+              || statusMove('Active', 'On the way')
+              || statusMove('Active', 'Cancelled')
+              || statusMove('On the way', 'Completed'));
+      }
+
+      function customerCancels() {
+        return isBookingCustomer()
+          && onlyChanges(['status', 'updatedAt'])
+          && (statusMove('Requested', 'Cancelled') || statusMove('Active', 'Cancelled'));
+      }
+
+      // One rating per booking, by the customer, after the job is completed.
+      function customerRates() {
+        return isBookingCustomer()
+          && resource.data.status == 'Completed'
+          && !('rating' in resource.data)
+          && onlyChanges(['rating', 'review', 'updatedAt'])
+          && request.resource.data.rating is int
+          && request.resource.data.rating >= 1
+          && request.resource.data.rating <= 5
+          && optionalString(request.resource.data, 'review', 1000);
+      }
+
+      allow get: if signedIn() && (isBookingCustomer() || isBookingPartner());
+      allow list: if signedIn() && (isBookingCustomer() || isBookingPartner());
+
+      allow create: if signedIn()
+        && request.resource.data.customerId == request.auth.uid
+        && request.resource.data.partnerId is string
+        && request.resource.data.partnerId != request.auth.uid
+        && hasCustomerProfile(request.auth.uid)
+        && isApprovedPartner(request.resource.data.partnerId)
+        && validNewBooking(request.resource.data);
+      allow update: if signedIn() && (partnerAdvancesStatus() || customerCancels() || customerRates());
+      allow delete: if false;
     }
 
     /**
-     * @description Allows the customer and partner associated with a booking to read/write chat messages.
+     * @description Chat messages between the customer and partner of a booking.
      * @path /bookings/{bookingId}/chat_messages/{messageId}
-     * @allow (get, list) request.auth.uid == 'user_abc' (if user_abc is customerId or partnerId in the parent booking)
-     * @allow (create, update, delete) request.auth.uid == 'user_abc' (if user_abc is customerId or partnerId in the parent booking)
-     * @deny (get, list, create, update, delete) request.auth.uid == 'outsider'
-     * @principle Enforces shared access for booking participants to chat messages.
+     * @allow (get, list) the booking's customer or partner
+     * @allow (create) a participant, as themselves (senderId == auth uid), while the booking is open
+     * @deny (create) outsiders, impersonation, and any booking that is Completed or Cancelled
+     * @deny (update, delete) everyone: messages are an immutable record of the conversation
      */
     match /bookings/{bookingId}/chat_messages/{messageId} {
-      function isParticipant(bookingId) {
-        return get(/databases/$(database)/documents/bookings/$(bookingId)).data.customerId == request.auth.uid
-            || get(/databases/$(database)/documents/bookings/$(bookingId)).data.partnerId == request.auth.uid;
+      // A missing booking makes get() return null; reading .data then errors, which denies the request.
+      function booking() {
+        return get(/databases/$(database)/documents/bookings/$(bookingId)).data;
       }
 
-      allow get: if isParticipant(bookingId);
-      allow list: if isParticipant(bookingId);
+      function isParticipant() {
+        return request.auth != null
+          && (booking().customerId == request.auth.uid || booking().partnerId == request.auth.uid);
+      }
 
-      allow create: if isParticipant(bookingId);
-      allow update: if isParticipant(bookingId);
-      allow delete: if isParticipant(bookingId);
+      function chatOpen() {
+        return booking().status in ['Requested', 'Active', 'On the way'];
+      }
+
+      function validNewMessage(data) {
+        return data.keys().hasAll(['senderId', 'text', 'createdAt'])
+          && data.keys().hasOnly(['senderId', 'text', 'createdAt'])
+          && data.senderId == request.auth.uid
+          && data.text is string && data.text.size() > 0 && data.text.size() <= 2000
+          && data.createdAt == request.time;
+      }
+
+      allow get: if isParticipant();
+      allow list: if isParticipant();
+
+      allow create: if isParticipant() && chatOpen() && validNewMessage(request.resource.data);
+      allow update: if false;
+      allow delete: if false;
     }
 
     /**
