@@ -18,7 +18,7 @@ import { Phone, MessageSquare, MapPin, Star } from "lucide-react";
 import { format } from "date-fns";
 import { Rating } from "@/components/rating";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useUser } from "@/hooks/useUser"; // ✅ Updated import path
+import { useUser } from "@/firebase";
 
 const BookingCard = ({ booking }: { booking: Booking }) => (
   <Card>
@@ -91,7 +91,7 @@ const BookingCard = ({ booking }: { booking: Booking }) => (
 );
 
 export default function HistoryPage() {
-  const { user, isUserLoading } = useUser(); // ✅ Always returns test user
+  const { user, isUserLoading } = useUser();
 
   if (isUserLoading) {
     return (

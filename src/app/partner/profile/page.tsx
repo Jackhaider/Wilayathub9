@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth, useUser } from '@/firebase';
-import { updateProfile, signOut } from 'firebase/auth';
+import { updateProfile } from 'firebase/auth';
+import { signOutUser } from '@/firebase/auth-flow';
 import { AppShell } from "@/components/app-shell";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -75,7 +76,7 @@ export default function PartnerProfilePage() {
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
+      await signOutUser(auth);
       toast({
         title: 'Logged Out',
         description: 'You have been successfully logged out.',

@@ -65,14 +65,8 @@ const promotions = [
 export default function CustomerDashboard() {
   const { location } = useLocation();
   const [showAllCategories, setShowAllCategories] = useState(false);
-  // const { user, isUserLoading } = useUser();
+  // Sign-in is enforced by <AppShell> (see components/auth-guard.tsx).
   const router = useRouter();
-
-  // useEffect(() => {
-  //   if (!isUserLoading && !user) {
-  //     router.push('/login');
-  //   }
-  // }, [user, isUserLoading, router]);
 
   const initialCategories = serviceCategories.slice(0, 8);
   const displayedCategories = showAllCategories ? serviceCategories : initialCategories;

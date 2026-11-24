@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { WilayatHubLogo } from "./icons";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { AuthGuard } from "./auth-guard";
 
 interface AppShellProps {
   navItems: NavItem[];
@@ -146,13 +147,17 @@ export function AppShell({ navItems, children, userType }: AppShellProps) {
     </div>
   );
 
+  // Every page rendered inside the app shell requires a signed-in user;
+  // partner pages also require a partner profile.
   return (
-    <div className="flex min-h-screen w-full flex-col">
-      {header}
-      <main className="flex flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-8 pb-20 md:pb-8">
-        {children}
-      </main>
-      {isMobile && bottomNav}
-    </div>
+    <AuthGuard accountType={userType}>
+      <div className="flex min-h-screen w-full flex-col">
+        {header}
+        <main className="flex flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-8 pb-20 md:pb-8">
+          {children}
+        </main>
+        {isMobile && bottomNav}
+      </div>
+    </AuthGuard>
   );
 }
